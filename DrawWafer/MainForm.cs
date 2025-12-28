@@ -11,7 +11,7 @@ namespace DrawWafer
         float EDGE_EXCLUSION_UM = 1500.0f;                      // Margin from the edge
         float DIE_SIZE_X_UM = 5096.0f;
         float DIE_SIZE_Y_UM = 4018.0f;
-        float STREET_WIDTH_UM = 10.0f;                         // Space between dies
+        float SCRIBE_WIDTH_UM = 10.0f;                         // Space between dies
 
         WaferControl currentMap;
 
@@ -34,10 +34,10 @@ namespace DrawWafer
             dieTable.Columns.Add("PT2_Y", typeof(float));
 
 
-            int dixLen = (int)((WAFER_DIAMETER_UM - 2 * EDGE_EXCLUSION_UM) / (DIE_SIZE_X_UM + STREET_WIDTH_UM));
-            float dixDum = (WAFER_DIAMETER_UM - 2 * EDGE_EXCLUSION_UM) % (DIE_SIZE_X_UM + STREET_WIDTH_UM);
-            int diyLen = (int)((WAFER_DIAMETER_UM - 2 * EDGE_EXCLUSION_UM) / (DIE_SIZE_Y_UM + STREET_WIDTH_UM));
-            float diyDum = (WAFER_DIAMETER_UM - 2 * EDGE_EXCLUSION_UM) % (DIE_SIZE_Y_UM + STREET_WIDTH_UM);
+            int dixLen = (int)((WAFER_DIAMETER_UM - 2 * EDGE_EXCLUSION_UM) / (DIE_SIZE_X_UM + SCRIBE_WIDTH_UM));
+            float dixDum = (WAFER_DIAMETER_UM - 2 * EDGE_EXCLUSION_UM) % (DIE_SIZE_X_UM + SCRIBE_WIDTH_UM);
+            int diyLen = (int)((WAFER_DIAMETER_UM - 2 * EDGE_EXCLUSION_UM) / (DIE_SIZE_Y_UM + SCRIBE_WIDTH_UM));
+            float diyDum = (WAFER_DIAMETER_UM - 2 * EDGE_EXCLUSION_UM) % (DIE_SIZE_Y_UM + SCRIBE_WIDTH_UM);
 
             float waferRadiusUm = WAFER_DIAMETER_UM / 2.0f;
             float validRadiusUm = waferRadiusUm - EDGE_EXCLUSION_UM;
@@ -48,8 +48,8 @@ namespace DrawWafer
                 for (int diY = 0; diY < diyLen; diY++)
                 {
 
-                    float xPos = -validRadiusUm + dixDum / 2.0f + diX * (DIE_SIZE_X_UM + STREET_WIDTH_UM);
-                    float yPos = -validRadiusUm + diyDum / 2.0f + diY * (DIE_SIZE_Y_UM + STREET_WIDTH_UM);
+                    float xPos = -validRadiusUm + dixDum / 2.0f + diX * (DIE_SIZE_X_UM + SCRIBE_WIDTH_UM);
+                    float yPos = -validRadiusUm + diyDum / 2.0f + diY * (DIE_SIZE_Y_UM + SCRIBE_WIDTH_UM);
 
                     bool valid = false;
 
@@ -85,7 +85,7 @@ namespace DrawWafer
             EDGE_EXCLUSION_UM = (float)Convert.ToDouble(WaferEdgeTextBox.Text);
             DIE_SIZE_X_UM = (float)Convert.ToDouble(dieSizeXTextBox.Text);
             DIE_SIZE_Y_UM = (float)Convert.ToDouble(dieSizeYTextBox.Text);
-            STREET_WIDTH_UM = (float)Convert.ToDouble(dieSpaceTextBox.Text);
+            SCRIBE_WIDTH_UM = (float)Convert.ToDouble(scrbeWidthTextBox.Text);
 
             viewPanel.Controls.Clear();
 
@@ -99,7 +99,7 @@ namespace DrawWafer
                 int top = (irow / columnCount) * (plusHeight + 1);
                 int left = (irow % columnCount) * (plusWidth + 1) + 3;
                 DataTable waferDT = CreateDieDataTable();
-                WaferControl waferControl = new WaferControl(waferDT, mapSize, WAFER_DIAMETER_UM, DIE_SIZE_X_UM, DIE_SIZE_Y_UM, EDGE_EXCLUSION_UM, STREET_WIDTH_UM);
+                WaferControl waferControl = new WaferControl(waferDT, mapSize, WAFER_DIAMETER_UM, DIE_SIZE_X_UM, DIE_SIZE_Y_UM, EDGE_EXCLUSION_UM, SCRIBE_WIDTH_UM);
                 viewPanel.Controls.Add(waferControl);
                 waferControl.Left = left;
                 waferControl.Top = top;

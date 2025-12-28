@@ -39,7 +39,7 @@
             toolStripLabel4 = new ToolStripLabel();
             dieSizeYTextBox = new ToolStripTextBox();
             toolStripLabel5 = new ToolStripLabel();
-            dieSpaceTextBox = new ToolStripTextBox();
+            scrbeWidthTextBox = new ToolStripTextBox();
             toolStripLabel6 = new ToolStripLabel();
             columnsCount = new ToolStripComboBox();
             toolStripLabel7 = new ToolStripLabel();
@@ -56,7 +56,7 @@
             // drawInfoToolStrip
             // 
             drawInfoToolStrip.BackColor = SystemColors.Control;
-            drawInfoToolStrip.Items.AddRange(new ToolStripItem[] { toolStripLabel1, waferSizeTextBox, toolStripLabel2, WaferEdgeTextBox, toolStripLabel3, dieSizeXTextBox, toolStripLabel4, dieSizeYTextBox, toolStripLabel5, dieSpaceTextBox, toolStripLabel6, columnsCount, toolStripLabel7, mapCount, drawButton });
+            drawInfoToolStrip.Items.AddRange(new ToolStripItem[] { toolStripLabel1, waferSizeTextBox, toolStripLabel2, WaferEdgeTextBox, toolStripLabel3, dieSizeXTextBox, toolStripLabel4, dieSizeYTextBox, toolStripLabel5, scrbeWidthTextBox, toolStripLabel6, columnsCount, toolStripLabel7, mapCount, drawButton });
             drawInfoToolStrip.Location = new Point(0, 0);
             drawInfoToolStrip.Name = "drawInfoToolStrip";
             drawInfoToolStrip.Size = new Size(1420, 25);
@@ -127,16 +127,16 @@
             // 
             toolStripLabel5.Font = new Font("맑은 고딕", 9F, FontStyle.Bold);
             toolStripLabel5.Name = "toolStripLabel5";
-            toolStripLabel5.Size = new Size(98, 22);
-            toolStripLabel5.Text = "Die Space (um):";
+            toolStripLabel5.Size = new Size(115, 22);
+            toolStripLabel5.Text = "Scribe Width (um):";
             // 
-            // dieSpaceTextBox
+            // scrbeWidthTextBox
             // 
-            dieSpaceTextBox.BorderStyle = BorderStyle.FixedSingle;
-            dieSpaceTextBox.Name = "dieSpaceTextBox";
-            dieSpaceTextBox.Size = new Size(40, 25);
-            dieSpaceTextBox.Text = "100";
-            dieSpaceTextBox.TextBoxTextAlign = HorizontalAlignment.Right;
+            scrbeWidthTextBox.BorderStyle = BorderStyle.FixedSingle;
+            scrbeWidthTextBox.Name = "scrbeWidthTextBox";
+            scrbeWidthTextBox.Size = new Size(40, 25);
+            scrbeWidthTextBox.Text = "100";
+            scrbeWidthTextBox.TextBoxTextAlign = HorizontalAlignment.Right;
             // 
             // toolStripLabel6
             // 
@@ -251,7 +251,7 @@
         private ToolStripLabel toolStripLabel4;
         private ToolStripTextBox dieSizeYTextBox;
         private ToolStripLabel toolStripLabel5;
-        private ToolStripTextBox dieSpaceTextBox;
+        private ToolStripTextBox scrbeWidthTextBox;
         private Panel viewPanel;
         private ToolStripLabel toolStripLabel6;
         private ToolStripComboBox columnsCount;

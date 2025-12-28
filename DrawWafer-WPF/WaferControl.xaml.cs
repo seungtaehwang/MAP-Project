@@ -27,7 +27,7 @@ namespace DrawWafer_WPF
         float EDGE_EXCLUSION_UM = 1500.0f;                      // Margin from the edge
         float DIE_SIZE_X_UM = 5096.0f;
         float DIE_SIZE_Y_UM = 4018.0f;
-        float STREET_WIDTH_UM = 10.0f;                         // Space between dies
+        float SCRIBE_WIDTH_UM = 10.0f;                         // Space between dies
 
         // --- Scaling Factor ---
         float ZOOM_SCALE = 1.0f;
@@ -35,7 +35,7 @@ namespace DrawWafer_WPF
         float WAFER_DIAMETER_PX = 0.0f;
         float DIE_SIZE_X_PX = 0.0f;
         float DIE_SIZE_Y_PX = 0.0f;
-        float STREET_WIDTH_PX = 0.0f;
+        float SCRIBE_WIDTH_PX = 0.0f;
 
         // Calculate total step size for grid placement
         float WAFER_RADIUS_PX = 0.0f;
@@ -62,7 +62,7 @@ namespace DrawWafer_WPF
             EDGE_EXCLUSION_UM = waferEdge;
             DIE_SIZE_X_UM = dieSizeX;
             DIE_SIZE_Y_UM = dieSizeY;
-            STREET_WIDTH_UM = dieSpace;
+            SCRIBE_WIDTH_UM = dieSpace;
 
             WaferCanvas.MouseLeftButtonDown += WaferCanvas_MouseDown;
             ZoomCanvas.MouseLeftButtonDown += ZoomCanvas_MouseDown;
@@ -95,8 +95,8 @@ namespace DrawWafer_WPF
 
             Point pt = e.GetPosition(ZoomCanvas);
 
-            float xPos = (float)pt.X - WAFER_RADIUS_PX;
-            float yPos = (float)-pt.Y + WAFER_RADIUS_PX;
+            float xPos = (float)pt.X;
+            float yPos = (float)-pt.Y;
 
             foreach (DataRow row in waferMapTable.Rows)
             {
@@ -144,7 +144,7 @@ namespace DrawWafer_WPF
 
             DIE_SIZE_X_PX = DIE_SIZE_X_UM / SCALE_FACTOR;
             DIE_SIZE_Y_PX = DIE_SIZE_Y_UM / SCALE_FACTOR;
-            STREET_WIDTH_PX = STREET_WIDTH_UM / SCALE_FACTOR;
+            SCRIBE_WIDTH_PX = SCRIBE_WIDTH_UM / SCALE_FACTOR;
 
             // Top, Bottom Info label 설정한다.
             TopInfo.Content = $"Wafer Map (Diameter: {WAFER_DIAMETER_UM / 1000:.0f} mm)";
@@ -163,6 +163,43 @@ namespace DrawWafer_WPF
             Canvas.SetTop(wafer, -WAFER_RADIUS_PX);
             drawCanvas.Children.Add(wafer);
 
+            // Wafer notch or flat zone 표시
+            Path arcPath = new Path();
+            arcPath.Stroke = Brushes.White; // Outline color
+            arcPath.StrokeThickness = 2;
+            PathGeometry pathGeometry = new PathGeometry();
+            PathFigure pathFigure = new PathFigure();
+            Point startPoint = new Point(1, -WAFER_RADIUS_PX + 2);
+            pathFigure.StartPoint = startPoint;
+            ArcSegment arcSegment = new ArcSegment();
+            arcSegment.Point = new Point(-1, -WAFER_RADIUS_PX + 2);
+            arcSegment.Size = new Size(4, 1);
+            arcSegment.RotationAngle = 0;
+            arcSegment.IsLargeArc = true;
+            arcSegment.SweepDirection = SweepDirection.Counterclockwise;
+            pathFigure.Segments.Add(arcSegment);
+            pathGeometry.Figures.Add(pathFigure);
+            arcPath.Data = pathGeometry;
+            drawCanvas.Children.Add(arcPath);
+
+            Line edgeLine = new Line();
+            edgeLine.X1 = 4;
+            edgeLine.Y1 = -WAFER_RADIUS_PX + 1;
+            edgeLine.X2 = 0;
+            edgeLine.Y2 = -WAFER_RADIUS_PX + 5;
+            edgeLine.Stroke = Brushes.Gray;
+            edgeLine.StrokeThickness = 1;
+            drawCanvas.Children.Add(edgeLine);
+
+            edgeLine = new Line();
+            edgeLine.X1 = -4;
+            edgeLine.Y1 = -WAFER_RADIUS_PX + 1;
+            edgeLine.X2 = 0;
+            edgeLine.Y2 = -WAFER_RADIUS_PX + 5;
+            edgeLine.Stroke = Brushes.Gray;
+            edgeLine.StrokeThickness = 1;
+            drawCanvas.Children.Add(edgeLine);
+
             // Chip Draw
             foreach (DataRow row in waferMapTable.Rows)
             {
@@ -176,7 +213,7 @@ namespace DrawWafer_WPF
                 {
                     Width = DIE_SIZE_X_PX,
                     Height = DIE_SIZE_Y_PX,
-                    Fill = (status == "G" ? Brushes.Green : Brushes.Red),
+                    Fill = (status == "G" ? Brushes.Blue : Brushes.Red),
                     Stroke = Brushes.LightGray,
                     StrokeThickness = 0.5
                 };

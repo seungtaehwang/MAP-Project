@@ -18,7 +18,7 @@ namespace DrawWafer
         float EDGE_EXCLUSION_UM = 1500.0f;                      // Margin from the edge
         float DIE_SIZE_X_UM = 5096.0f;
         float DIE_SIZE_Y_UM = 4018.0f;
-        float STREET_WIDTH_UM = 10.0f;                         // Space between dies
+        float SCRIBE_WIDTH_UM = 10.0f;                         // Space between dies
 
         // --- Scaling Factor ---
         float ZOOM_SCALE = 1.0f;
@@ -26,7 +26,7 @@ namespace DrawWafer
         float WAFER_DIAMETER_PX = 0.0f;
         float DIE_SIZE_X_PX = 0.0f;
         float DIE_SIZE_Y_PX = 0.0f;
-        float STREET_WIDTH_PX = 0.0f;
+        float SCRIBE_WIDTH_PX = 0.0f;
         //float EDGE_EXCLUSION_PX = 0.0f;
         //float TOP_LABLE_SPACE_PX = 30.0f;
 
@@ -49,14 +49,14 @@ namespace DrawWafer
             
             // Wafer Control Size
             this.Width = mapSize + 2;
-            this.Height = mapSize + 30 + 2;
+            this.Height = mapSize + 30 + 3;
 
             // Configuration
             WAFER_DIAMETER_UM = waferSize;
             EDGE_EXCLUSION_UM = waferEdge;
             DIE_SIZE_X_UM = dieSizeX;
             DIE_SIZE_Y_UM = dieSizeY;
-            STREET_WIDTH_UM = dieSpace;
+            SCRIBE_WIDTH_UM = dieSpace;
 
             // Initialize Canvas
             canvasBitmap = new Bitmap(mapBox.Width, mapBox.Height);
@@ -141,9 +141,9 @@ namespace DrawWafer
 
             DIE_SIZE_X_PX = DIE_SIZE_X_UM / SCALE_FACTOR;
             DIE_SIZE_Y_PX = DIE_SIZE_Y_UM / SCALE_FACTOR;
-            STREET_WIDTH_PX = STREET_WIDTH_UM / SCALE_FACTOR;
-            STEP_X_PX = DIE_SIZE_X_PX + STREET_WIDTH_PX;
-            STEP_Y_PX = DIE_SIZE_Y_PX + STREET_WIDTH_PX;
+            SCRIBE_WIDTH_PX = SCRIBE_WIDTH_UM / SCALE_FACTOR;
+            STEP_X_PX = DIE_SIZE_X_PX + SCRIBE_WIDTH_PX;
+            STEP_Y_PX = DIE_SIZE_Y_PX + SCRIBE_WIDTH_PX;
 
             topLabel.Text = $"Wafer Map (Diameter: {WAFER_DIAMETER_UM / 1000:.0f} mm)";
             bottomLabel.Text = $"Die size: {DIE_SIZE_X_UM}x{DIE_SIZE_Y_UM} um (Scale: 1px = {SCALE_FACTOR}um)";
@@ -151,6 +151,11 @@ namespace DrawWafer
             // Draw Wafer 테두리
             Pen pen = new Pen(Color.LightGray, 1);
             canvasGraphics.DrawEllipse(pen, -WAFER_RADIUS_PX, -WAFER_RADIUS_PX, WAFER_DIAMETER_PX, WAFER_DIAMETER_PX);
+
+            // Wafer notch or flat zone 표시
+            canvasGraphics.FillRectangle(new SolidBrush(Color.White), -4, -WAFER_RADIUS_PX-1, 8, 2);
+            canvasGraphics.DrawLine(new Pen(Color.Gray, 1), -5, -WAFER_RADIUS_PX - 1, 0, -WAFER_RADIUS_PX + 5);
+            canvasGraphics.DrawLine(new Pen(Color.Gray, 1), 5, -WAFER_RADIUS_PX - 1, 0, -WAFER_RADIUS_PX + 5);
 
             // Draw Chip
             foreach (DataRow row in waferMapTable.Rows)
@@ -173,7 +178,7 @@ namespace DrawWafer
 
                 // Chip의 현재 Pixel Position 저장
                 row["PT1_X"] = xPosPx;
-                row["PT1_Y"] =  yPosPx;
+                row["PT1_Y"] = yPosPx;
                 row["PT2_X"] = xPosPx + DIE_SIZE_X_PX;
                 row["PT2_Y"] = yPosPx + DIE_SIZE_Y_PX;
             }
