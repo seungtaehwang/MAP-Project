@@ -164,24 +164,20 @@ namespace DrawWafer_WPF
             drawCanvas.Children.Add(wafer);
 
             // Wafer notch or flat zone 표시
-            Path arcPath = new Path();
-            arcPath.Stroke = Brushes.White; // Outline color
-            arcPath.StrokeThickness = 2;
-            PathGeometry pathGeometry = new PathGeometry();
-            PathFigure pathFigure = new PathFigure();
-            Point startPoint = new Point(1, -WAFER_RADIUS_PX + 2);
-            pathFigure.StartPoint = startPoint;
-            ArcSegment arcSegment = new ArcSegment();
-            arcSegment.Point = new Point(-1, -WAFER_RADIUS_PX + 2);
-            arcSegment.Size = new Size(4, 1);
-            arcSegment.RotationAngle = 0;
-            arcSegment.IsLargeArc = true;
-            arcSegment.SweepDirection = SweepDirection.Counterclockwise;
-            pathFigure.Segments.Add(arcSegment);
-            pathGeometry.Figures.Add(pathFigure);
-            arcPath.Data = pathGeometry;
-            drawCanvas.Children.Add(arcPath);
+            Rectangle notch = new Rectangle
+            {
+                Width = 8,
+                Height = 5,
+                Fill = Brushes.White,
+                Stroke = Brushes.White,
+                StrokeThickness =1
+            };
+            // notch position wafer 테두리 삭제
+            Canvas.SetLeft(notch, -4);
+            Canvas.SetTop(notch, -WAFER_RADIUS_PX - 2);
+            drawCanvas.Children.Add(notch);
 
+            // Draw notch line 
             Line edgeLine = new Line();
             edgeLine.X1 = 4;
             edgeLine.Y1 = -WAFER_RADIUS_PX + 1;
