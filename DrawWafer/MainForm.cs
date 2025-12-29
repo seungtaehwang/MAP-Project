@@ -114,5 +114,11 @@ namespace DrawWafer
         {
             currentMap.DrawWaferMap(Convert.ToSingle(zoomScale.Text));
         }
+
+        private void toolStripButton1_Click(object sender, EventArgs e)
+        {
+            ColorCode colorCode = new ColorCode();
+            colorCode.ShowDialog();
+        }
     }
 }

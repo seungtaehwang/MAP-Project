@@ -49,6 +49,7 @@
             singleToolStrip = new ToolStrip();
             toolStripLabel8 = new ToolStripLabel();
             zoomScale = new ToolStripComboBox();
+            toolStripButton1 = new ToolStripButton();
             drawInfoToolStrip.SuspendLayout();
             singleToolStrip.SuspendLayout();
             SuspendLayout();
@@ -56,7 +57,7 @@
             // drawInfoToolStrip
             // 
             drawInfoToolStrip.BackColor = SystemColors.Control;
-            drawInfoToolStrip.Items.AddRange(new ToolStripItem[] { toolStripLabel1, waferSizeTextBox, toolStripLabel2, WaferEdgeTextBox, toolStripLabel3, dieSizeXTextBox, toolStripLabel4, dieSizeYTextBox, toolStripLabel5, scrbeWidthTextBox, toolStripLabel6, columnsCount, toolStripLabel7, mapCount, drawButton });
+            drawInfoToolStrip.Items.AddRange(new ToolStripItem[] { toolStripLabel1, waferSizeTextBox, toolStripLabel2, WaferEdgeTextBox, toolStripLabel3, dieSizeXTextBox, toolStripLabel4, dieSizeYTextBox, toolStripLabel5, scrbeWidthTextBox, toolStripLabel6, columnsCount, toolStripLabel7, mapCount, drawButton, toolStripButton1 });
             drawInfoToolStrip.Location = new Point(0, 0);
             drawInfoToolStrip.Name = "drawInfoToolStrip";
             drawInfoToolStrip.Size = new Size(1420, 25);
@@ -218,6 +219,18 @@
             zoomScale.Text = "1";
             zoomScale.TextChanged += zoomScale_TextChanged;
             // 
+            // toolStripButton1
+            // 
+            toolStripButton1.BackColor = Color.Violet;
+            toolStripButton1.DisplayStyle = ToolStripItemDisplayStyle.Text;
+            toolStripButton1.Image = (Image)resources.GetObject("toolStripButton1.Image");
+            toolStripButton1.ImageTransparentColor = Color.Magenta;
+            toolStripButton1.Name = "toolStripButton1";
+            toolStripButton1.Size = new Size(82, 22);
+            toolStripButton1.Text = "Color Setting";
+            toolStripButton1.TextImageRelation = TextImageRelation.TextAboveImage;
+            toolStripButton1.Click += toolStripButton1_Click;
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -261,5 +274,6 @@
         private ToolStrip singleToolStrip;
         private ToolStripLabel toolStripLabel8;
         private ToolStripComboBox zoomScale;
+        private ToolStripButton toolStripButton1;
     }
 }

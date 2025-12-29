@@ -38,6 +38,7 @@ x64/
 *.log
 *.vspscc
 *.vssscc
+*.vsidx
 .builds
 *.pidb
 *.log
@@ -158,3 +159,6 @@ _NCrunch*
 /.vs/Map-Project/FileContentIndex/2f7a5bf2-288f-4cf0-8184-5b1e05f60dd6.vsidx
 /.vs/Map-Project/FileContentIndex/5291ab54-ccb0-4ac7-b356-d89833b98ae7.vsidx
 /.vs/Map-Project/FileContentIndex/ba94dac0-0510-4136-94af-85220f422ec7.vsidx
+/.vs/Map-Project/FileContentIndex/79c347cf-c0e4-4d77-a45e-e6aeccfbc7f0.vsidx
+/.vs/Map-Project/FileContentIndex/0daaa5db-aba8-488f-aeae-25bb0cb433f2.vsidx
+/.vs/Map-Project/FileContentIndex/58b7d0ab-9dad-409e-85ce-e55091284a2d.vsidx
