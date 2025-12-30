@@ -112,7 +112,7 @@ namespace DrawWafer
         {
             Bitmap bmp = new Bitmap(gradientPictureBox.Width, gradientPictureBox.Height);
             Graphics g = Graphics.FromImage(bmp);
-            g.Clear(Color.Transparent);
+            g.Clear(Color.White);
             gradientPictureBox.Image = bmp;
             Rectangle rec;
             LinearGradientBrush lgb;
@@ -126,11 +126,11 @@ namespace DrawWafer
                     g.FillRectangle(lgb, rec);
                     break;
                 case "Three":
-                    rec = new Rectangle(0, 0, bmp.Width/2, bmp.Height);
-                    lgb = new LinearGradientBrush(rec, startc, midc, LinearGradientMode.Horizontal);
-                    g.FillRectangle(lgb, rec);
                     rec = new Rectangle((int)(bmp.Width / 2), 0, bmp.Width / 2, bmp.Height);
                     lgb = new LinearGradientBrush(rec, midc, endc, LinearGradientMode.Horizontal);
+                    g.FillRectangle(lgb, rec);
+                    rec = new Rectangle(0, 0, (int)(bmp.Width/2)+1, bmp.Height);
+                    lgb = new LinearGradientBrush(rec, startc, midc, LinearGradientMode.Horizontal);
                     g.FillRectangle(lgb, rec);
                     break;
                 case "Parula":

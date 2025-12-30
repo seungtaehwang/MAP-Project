@@ -68,12 +68,14 @@
             // 
             // mapPanel
             // 
+            mapPanel.AutoScroll = true;
             mapPanel.Controls.Add(mapBox);
             mapPanel.Dock = DockStyle.Fill;
             mapPanel.Location = new Point(1, 16);
             mapPanel.Name = "mapPanel";
             mapPanel.Size = new Size(298, 298);
             mapPanel.TabIndex = 3;
+            mapPanel.Scroll += mapPanel_Scroll;
             // 
             // WaferControl
             // 

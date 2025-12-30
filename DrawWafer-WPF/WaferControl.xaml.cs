@@ -163,35 +163,36 @@ namespace DrawWafer_WPF
             Canvas.SetTop(wafer, -WAFER_RADIUS_PX);
             drawCanvas.Children.Add(wafer);
 
-            // Wafer notch or flat zone 표시
+            // Wafer notch or flat zone 표시 -> notch size는 wafer size의 1.5%
+            // notch position wafer 테두리 삭제
+            float notchSize = (float)(drawCanvas.Width * 0.015);
             Rectangle notch = new Rectangle
             {
-                Width = 8,
+                Width = notchSize,
                 Height = 5,
                 Fill = Brushes.White,
                 Stroke = Brushes.White,
                 StrokeThickness =1
             };
-            // notch position wafer 테두리 삭제
-            Canvas.SetLeft(notch, -4);
+            Canvas.SetLeft(notch, -(notchSize / 2));
             Canvas.SetTop(notch, -WAFER_RADIUS_PX - 2);
             drawCanvas.Children.Add(notch);
 
             // Draw notch line 
             Line edgeLine = new Line();
-            edgeLine.X1 = 4;
-            edgeLine.Y1 = -WAFER_RADIUS_PX + 1;
+            edgeLine.X1 = (notchSize / 2);
+            edgeLine.Y1 = -WAFER_RADIUS_PX;
             edgeLine.X2 = 0;
-            edgeLine.Y2 = -WAFER_RADIUS_PX + 5;
+            edgeLine.Y2 = -WAFER_RADIUS_PX + notchSize;
             edgeLine.Stroke = Brushes.Gray;
             edgeLine.StrokeThickness = 1;
             drawCanvas.Children.Add(edgeLine);
 
             edgeLine = new Line();
-            edgeLine.X1 = -4;
-            edgeLine.Y1 = -WAFER_RADIUS_PX + 1;
+            edgeLine.X1 = -(notchSize / 2);
+            edgeLine.Y1 = -WAFER_RADIUS_PX;
             edgeLine.X2 = 0;
-            edgeLine.Y2 = -WAFER_RADIUS_PX + 5;
+            edgeLine.Y2 = -WAFER_RADIUS_PX + notchSize;
             edgeLine.Stroke = Brushes.Gray;
             edgeLine.StrokeThickness = 1;
             drawCanvas.Children.Add(edgeLine);

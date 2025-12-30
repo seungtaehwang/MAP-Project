@@ -34,22 +34,22 @@ namespace DrawWafer
             dieTable.Columns.Add("PT2_Y", typeof(float));
 
 
-            int dixLen = (int)((WAFER_DIAMETER_UM - 2 * EDGE_EXCLUSION_UM) / (DIE_SIZE_X_UM + SCRIBE_WIDTH_UM));
-            float dixDum = (WAFER_DIAMETER_UM - 2 * EDGE_EXCLUSION_UM) % (DIE_SIZE_X_UM + SCRIBE_WIDTH_UM);
-            int diyLen = (int)((WAFER_DIAMETER_UM - 2 * EDGE_EXCLUSION_UM) / (DIE_SIZE_Y_UM + SCRIBE_WIDTH_UM));
-            float diyDum = (WAFER_DIAMETER_UM - 2 * EDGE_EXCLUSION_UM) % (DIE_SIZE_Y_UM + SCRIBE_WIDTH_UM);
+            int diexLen = (int)((WAFER_DIAMETER_UM - 2 * EDGE_EXCLUSION_UM) / (DIE_SIZE_X_UM + SCRIBE_WIDTH_UM));
+            float diexDum = (WAFER_DIAMETER_UM - 2 * EDGE_EXCLUSION_UM) % (DIE_SIZE_X_UM + SCRIBE_WIDTH_UM);
+            int dieyLen = (int)((WAFER_DIAMETER_UM - 2 * EDGE_EXCLUSION_UM) / (DIE_SIZE_Y_UM + SCRIBE_WIDTH_UM));
+            float dieyDum = (WAFER_DIAMETER_UM - 2 * EDGE_EXCLUSION_UM) % (DIE_SIZE_Y_UM + SCRIBE_WIDTH_UM);
 
             float waferRadiusUm = WAFER_DIAMETER_UM / 2.0f;
             float validRadiusUm = waferRadiusUm - EDGE_EXCLUSION_UM;
 
             int dieID = 0;
-            for (int diX = 0; diX < dixLen; diX++)
+            for (int diX = 0; diX < diexLen; diX++)
             {
-                for (int diY = 0; diY < diyLen; diY++)
+                for (int diY = 0; diY < dieyLen; diY++)
                 {
 
-                    float xPos = -validRadiusUm + dixDum / 2.0f + diX * (DIE_SIZE_X_UM + SCRIBE_WIDTH_UM);
-                    float yPos = -validRadiusUm + diyDum / 2.0f + diY * (DIE_SIZE_Y_UM + SCRIBE_WIDTH_UM);
+                    float xPos = -validRadiusUm + diexDum / 2.0f + diX * (DIE_SIZE_X_UM + SCRIBE_WIDTH_UM);
+                    float yPos = -validRadiusUm + dieyDum / 2.0f + diY * (DIE_SIZE_Y_UM + SCRIBE_WIDTH_UM);
 
                     bool valid = false;
 
@@ -93,6 +93,7 @@ namespace DrawWafer
             int plusWidth = mapSize + 2;
             int plusHeight = mapSize + 32;
             int columnCount = Convert.ToInt32(columnsCount.Text);
+            int zoomScale = Convert.ToInt32(zoomScaleComboBox.Text);
 
             for (int irow = 0; irow < Convert.ToInt32(mapCount.Text); irow++)
             {
@@ -104,15 +105,10 @@ namespace DrawWafer
                 waferControl.Left = left;
                 waferControl.Top = top;
                 waferControl.Visible = false;
-                waferControl.DrawWaferMap();
+                waferControl.DrawWaferMap(zoomScale);
                 waferControl.Visible = true;
             }
             this.Cursor = Cursors.Arrow;
-        }
-
-        private void zoomScale_TextChanged(object sender, EventArgs e)
-        {
-            currentMap.DrawWaferMap(Convert.ToSingle(zoomScale.Text));
         }
 
         private void toolStripButton1_Click(object sender, EventArgs e)
@@ -120,5 +116,6 @@ namespace DrawWafer
             ColorCode colorCode = new ColorCode();
             colorCode.ShowDialog();
         }
+
     }
 }

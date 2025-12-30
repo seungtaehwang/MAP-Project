@@ -46,7 +46,7 @@ namespace DrawWafer
             this.SetStyle(ControlStyles.ResizeRedraw, true);
 
             waferMapTable = dt;
-            
+
             // Wafer Control Size
             this.Width = mapSize + 2;
             this.Height = mapSize + 30 + 3;
@@ -58,21 +58,6 @@ namespace DrawWafer
             DIE_SIZE_Y_UM = dieSizeY;
             SCRIBE_WIDTH_UM = dieSpace;
 
-            // Initialize Canvas
-            canvasBitmap = new Bitmap(mapBox.Width, mapBox.Height);
-            canvasGraphics = Graphics.FromImage(canvasBitmap);
-            canvasGraphics.Clear(Color.White);
-            mapBox.Image = canvasBitmap;
-
-            // 폼의 중앙 좌표 계산 (원점 설정)
-            int centerX = this.mapBox.Width / 2;
-            int centerY = this.mapBox.Height / 2;
-
-            // 좌표계 변환:
-            // 1. 원점을 폼 중앙으로 이동
-            canvasGraphics.TranslateTransform(centerX, centerY);
-            // 2. Y축을 상하 반전시켜 수학적 좌표계와 일치시킴 (Y값이 위로 갈수록 증가)
-            canvasGraphics.ScaleTransform(1, -1);
 
             // mapBox(WaferMap) Event Mapping
             mapBox.MouseDown += MapBox_MouseDown;
@@ -83,7 +68,7 @@ namespace DrawWafer
             float xPos = (float)e.X - WAFER_RADIUS_PX;
             float yPos = (float)-e.Y + WAFER_RADIUS_PX;
 
-            foreach (DataRow row in waferMapTable.Rows) 
+            foreach (DataRow row in waferMapTable.Rows)
             {
                 float xPos1 = Convert.ToSingle(row["PT1_X"]);
                 float yPos1 = Convert.ToSingle(row["PT1_Y"]);
@@ -91,13 +76,14 @@ namespace DrawWafer
                 float yPos2 = Convert.ToSingle(row["PT2_Y"]);
                 if (xPos1 <= xPos && xPos <= xPos2 && yPos1 <= yPos && yPos <= yPos2)
                 {
-                    MessageBox.Show($"PT1=({xPos1}, {yPos1}), PT1=({xPos2}, {yPos2}), findPosX={xPos}, findPosY={xPos}"); 
+                    MessageBox.Show($"PT1=({xPos1}, {yPos1}), PT1=({xPos2}, {yPos2}), findPosX={xPos}, findPosY={xPos}");
                     break;
                 }
             }
         }
 
         private Color _borderColor = Color.LightGray; // Default border color
+        [DefaultValue(typeof(Color), "LightGray")] // 특성으로 기본값 지정
         public Color BorderColor
         {
             get { return _borderColor; }
@@ -114,7 +100,7 @@ namespace DrawWafer
 
             // Draw the border manually
             Rectangle rect = new Rectangle(0, 0, this.Width - 1, this.Height - 1);
-            using (Pen pen = new Pen(BorderColor, 1))
+            using (Pen pen = new Pen(_borderColor, 1))
             {
                 e.Graphics.DrawRectangle(pen, rect);
             }
@@ -130,9 +116,36 @@ namespace DrawWafer
             ZOOM_SCALE = zoomScale;
 
             // Zoom Scale에 따른 Cnavas 설정한다.
+            mapBox.Left = 0;
+            mapBox.Top = 0;
+
+            if (ZOOM_SCALE != 1.0f)
+            {
+                mapBox.Dock = DockStyle.None;
+            }
+            else
+            {
+                mapBox.Dock = DockStyle.Fill;
+            }
             mapBox.Width = (mapPanel.Width - 2) * (int)ZOOM_SCALE;
             mapBox.Height = (mapPanel.Width - 2) * (int)ZOOM_SCALE;
 
+            // Initialize Canvas
+            canvasBitmap = new Bitmap(mapBox.Width, mapBox.Height);
+            canvasGraphics = Graphics.FromImage(canvasBitmap);
+            canvasGraphics.Clear(Color.White);
+            mapBox.Image = canvasBitmap;
+
+            // 폼의 중앙 좌표 계산 (원점 설정)
+            int centerX = this.mapBox.Width / 2;
+            int centerY = this.mapBox.Height / 2;
+
+            // 좌표계 변환:
+            // 1. 원점을 폼 중앙으로 이동
+            canvasGraphics.TranslateTransform(centerX, centerY);
+            // 2. Y축을 상하 반전시켜 수학적 좌표계와 일치시킴 (Y값이 위로 갈수록 증가)
+            canvasGraphics.ScaleTransform(1, -1);
+            
             // um -> Pixel로 환산한 변수값 설정한다.
             SCALE_FACTOR = WAFER_DIAMETER_UM / (float)mapBox.Width;
             WAFER_DIAMETER_PX = WAFER_DIAMETER_UM / SCALE_FACTOR;
@@ -152,10 +165,11 @@ namespace DrawWafer
             Pen pen = new Pen(Color.LightGray, 1);
             canvasGraphics.DrawEllipse(pen, -WAFER_RADIUS_PX, -WAFER_RADIUS_PX, WAFER_DIAMETER_PX, WAFER_DIAMETER_PX);
 
-            // Wafer notch or flat zone 표시
-            canvasGraphics.FillRectangle(new SolidBrush(Color.White), -4, -WAFER_RADIUS_PX-1, 8, 2);
-            canvasGraphics.DrawLine(new Pen(Color.Gray, 1), -5, -WAFER_RADIUS_PX - 1, 0, -WAFER_RADIUS_PX + 5);
-            canvasGraphics.DrawLine(new Pen(Color.Gray, 1), 5, -WAFER_RADIUS_PX - 1, 0, -WAFER_RADIUS_PX + 5);
+            // Wafer notch or flat zone 표시 -> notch size는 wafer size의 1.5%
+            int notchSize = (int)(mapBox.Width * 0.015f);
+            canvasGraphics.FillRectangle(new SolidBrush(Color.White), -(notchSize / 2), -WAFER_RADIUS_PX - 1, notchSize, 2);
+            canvasGraphics.DrawLine(new Pen(Color.Gray, 1), -(notchSize / 2), -WAFER_RADIUS_PX, 0, -WAFER_RADIUS_PX + notchSize);
+            canvasGraphics.DrawLine(new Pen(Color.Gray, 1), (notchSize / 2), -WAFER_RADIUS_PX, 0, -WAFER_RADIUS_PX + notchSize);
 
             // Draw Chip
             foreach (DataRow row in waferMapTable.Rows)
@@ -182,9 +196,12 @@ namespace DrawWafer
                 row["PT2_X"] = xPosPx + DIE_SIZE_X_PX;
                 row["PT2_Y"] = yPosPx + DIE_SIZE_Y_PX;
             }
+            mapBox.Refresh();
+        }
 
-            mapBox.Invalidate();
-            this.Invalidate(); 
+        private void mapPanel_Scroll(object sender, ScrollEventArgs e)
+        {
+            mapBox.Refresh();
         }
     }
 }

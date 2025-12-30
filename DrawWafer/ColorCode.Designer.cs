@@ -214,7 +214,6 @@
             // 
             // gradientPictureBox
             // 
-            gradientPictureBox.BorderStyle = BorderStyle.FixedSingle;
             gradientPictureBox.Location = new Point(21, 60);
             gradientPictureBox.Name = "gradientPictureBox";
             gradientPictureBox.Size = new Size(600, 38);

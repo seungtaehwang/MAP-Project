@@ -45,19 +45,17 @@
             toolStripLabel7 = new ToolStripLabel();
             mapCount = new ToolStripComboBox();
             drawButton = new ToolStripButton();
-            viewPanel = new Panel();
-            singleToolStrip = new ToolStrip();
-            toolStripLabel8 = new ToolStripLabel();
-            zoomScale = new ToolStripComboBox();
             toolStripButton1 = new ToolStripButton();
+            toolStripLabel9 = new ToolStripLabel();
+            zoomScaleComboBox = new ToolStripComboBox();
+            viewPanel = new Panel();
             drawInfoToolStrip.SuspendLayout();
-            singleToolStrip.SuspendLayout();
             SuspendLayout();
             // 
             // drawInfoToolStrip
             // 
             drawInfoToolStrip.BackColor = SystemColors.Control;
-            drawInfoToolStrip.Items.AddRange(new ToolStripItem[] { toolStripLabel1, waferSizeTextBox, toolStripLabel2, WaferEdgeTextBox, toolStripLabel3, dieSizeXTextBox, toolStripLabel4, dieSizeYTextBox, toolStripLabel5, scrbeWidthTextBox, toolStripLabel6, columnsCount, toolStripLabel7, mapCount, drawButton, toolStripButton1 });
+            drawInfoToolStrip.Items.AddRange(new ToolStripItem[] { toolStripLabel1, waferSizeTextBox, toolStripLabel2, WaferEdgeTextBox, toolStripLabel3, dieSizeXTextBox, toolStripLabel4, dieSizeYTextBox, toolStripLabel5, scrbeWidthTextBox, toolStripLabel6, columnsCount, toolStripLabel7, mapCount, drawButton, toolStripButton1, toolStripLabel9, zoomScaleComboBox });
             drawInfoToolStrip.Location = new Point(0, 0);
             drawInfoToolStrip.Name = "drawInfoToolStrip";
             drawInfoToolStrip.Size = new Size(1420, 25);
@@ -182,43 +180,6 @@
             drawButton.Text = "Draw Map";
             drawButton.Click += drawButton_Click;
             // 
-            // viewPanel
-            // 
-            viewPanel.AutoScroll = true;
-            viewPanel.Dock = DockStyle.Fill;
-            viewPanel.Location = new Point(0, 25);
-            viewPanel.Name = "viewPanel";
-            viewPanel.Size = new Size(1420, 726);
-            viewPanel.TabIndex = 2;
-            viewPanel.Click += drawButton_Click;
-            // 
-            // singleToolStrip
-            // 
-            singleToolStrip.Items.AddRange(new ToolStripItem[] { toolStripLabel8, zoomScale });
-            singleToolStrip.Location = new Point(0, 25);
-            singleToolStrip.Name = "singleToolStrip";
-            singleToolStrip.Size = new Size(1420, 25);
-            singleToolStrip.TabIndex = 3;
-            singleToolStrip.Text = "toolStrip1";
-            singleToolStrip.Visible = false;
-            // 
-            // toolStripLabel8
-            // 
-            toolStripLabel8.Font = new Font("맑은 고딕", 9F, FontStyle.Bold);
-            toolStripLabel8.Name = "toolStripLabel8";
-            toolStripLabel8.Size = new Size(80, 22);
-            toolStripLabel8.Text = "Zoom Scale :";
-            // 
-            // zoomScale
-            // 
-            zoomScale.AutoSize = false;
-            zoomScale.DropDownWidth = 75;
-            zoomScale.Items.AddRange(new object[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" });
-            zoomScale.Name = "zoomScale";
-            zoomScale.Size = new Size(40, 23);
-            zoomScale.Text = "1";
-            zoomScale.TextChanged += zoomScale_TextChanged;
-            // 
             // toolStripButton1
             // 
             toolStripButton1.BackColor = Color.Violet;
@@ -231,6 +192,32 @@
             toolStripButton1.TextImageRelation = TextImageRelation.TextAboveImage;
             toolStripButton1.Click += toolStripButton1_Click;
             // 
+            // toolStripLabel9
+            // 
+            toolStripLabel9.Font = new Font("맑은 고딕", 9F, FontStyle.Bold);
+            toolStripLabel9.Name = "toolStripLabel9";
+            toolStripLabel9.Size = new Size(80, 22);
+            toolStripLabel9.Text = "Zoom Scale :";
+            // 
+            // zoomScaleComboBox
+            // 
+            zoomScaleComboBox.AutoSize = false;
+            zoomScaleComboBox.DropDownWidth = 75;
+            zoomScaleComboBox.Items.AddRange(new object[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "15", "20", "25", "30", "35", "40", "45", "50", "55", "60", "65", "70", "75" });
+            zoomScaleComboBox.Name = "zoomScaleComboBox";
+            zoomScaleComboBox.Size = new Size(40, 23);
+            zoomScaleComboBox.Text = "1";
+            // 
+            // viewPanel
+            // 
+            viewPanel.AutoScroll = true;
+            viewPanel.Dock = DockStyle.Fill;
+            viewPanel.Location = new Point(0, 25);
+            viewPanel.Name = "viewPanel";
+            viewPanel.Size = new Size(1420, 726);
+            viewPanel.TabIndex = 2;
+            viewPanel.Click += drawButton_Click;
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -238,7 +225,6 @@
             BackColor = Color.White;
             ClientSize = new Size(1420, 751);
             Controls.Add(viewPanel);
-            Controls.Add(singleToolStrip);
             Controls.Add(drawInfoToolStrip);
             Name = "MainForm";
             StartPosition = FormStartPosition.CenterScreen;
@@ -246,8 +232,6 @@
             WindowState = FormWindowState.Maximized;
             drawInfoToolStrip.ResumeLayout(false);
             drawInfoToolStrip.PerformLayout();
-            singleToolStrip.ResumeLayout(false);
-            singleToolStrip.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -271,9 +255,8 @@
         private ToolStripButton drawButton;
         private ToolStripLabel toolStripLabel7;
         private ToolStripComboBox mapCount;
-        private ToolStrip singleToolStrip;
-        private ToolStripLabel toolStripLabel8;
-        private ToolStripComboBox zoomScale;
         private ToolStripButton toolStripButton1;
+        private ToolStripLabel toolStripLabel9;
+        private ToolStripComboBox zoomScaleComboBox;
     }
 }
