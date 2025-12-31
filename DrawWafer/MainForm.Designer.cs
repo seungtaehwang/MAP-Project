@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-            drawInfoToolStrip = new ToolStrip();
+            mainToolStrip = new ToolStrip();
             toolStripLabel1 = new ToolStripLabel();
             waferSizeTextBox = new ToolStripTextBox();
             toolStripLabel2 = new ToolStripLabel();
@@ -46,21 +46,25 @@
             mapCount = new ToolStripComboBox();
             drawButton = new ToolStripButton();
             toolStripButton1 = new ToolStripButton();
+            viewPanel = new Panel();
+            singleToolStrip = new ToolStrip();
             toolStripLabel9 = new ToolStripLabel();
             zoomScaleComboBox = new ToolStripComboBox();
-            viewPanel = new Panel();
-            drawInfoToolStrip.SuspendLayout();
+            mapInfoLabel = new Label();
+            WpfCheckBox = new CheckBox();
+            mainToolStrip.SuspendLayout();
+            singleToolStrip.SuspendLayout();
             SuspendLayout();
             // 
-            // drawInfoToolStrip
+            // mainToolStrip
             // 
-            drawInfoToolStrip.BackColor = SystemColors.Control;
-            drawInfoToolStrip.Items.AddRange(new ToolStripItem[] { toolStripLabel1, waferSizeTextBox, toolStripLabel2, WaferEdgeTextBox, toolStripLabel3, dieSizeXTextBox, toolStripLabel4, dieSizeYTextBox, toolStripLabel5, scrbeWidthTextBox, toolStripLabel6, columnsCount, toolStripLabel7, mapCount, drawButton, toolStripButton1, toolStripLabel9, zoomScaleComboBox });
-            drawInfoToolStrip.Location = new Point(0, 0);
-            drawInfoToolStrip.Name = "drawInfoToolStrip";
-            drawInfoToolStrip.Size = new Size(1420, 25);
-            drawInfoToolStrip.TabIndex = 0;
-            drawInfoToolStrip.Text = "toolStrip1";
+            mainToolStrip.BackColor = SystemColors.Control;
+            mainToolStrip.Items.AddRange(new ToolStripItem[] { toolStripLabel1, waferSizeTextBox, toolStripLabel2, WaferEdgeTextBox, toolStripLabel3, dieSizeXTextBox, toolStripLabel4, dieSizeYTextBox, toolStripLabel5, scrbeWidthTextBox, toolStripLabel6, columnsCount, toolStripLabel7, mapCount, drawButton, toolStripButton1 });
+            mainToolStrip.Location = new Point(0, 0);
+            mainToolStrip.Name = "mainToolStrip";
+            mainToolStrip.Size = new Size(1420, 25);
+            mainToolStrip.TabIndex = 0;
+            mainToolStrip.Text = "toolStrip1";
             // 
             // toolStripLabel1
             // 
@@ -192,6 +196,26 @@
             toolStripButton1.TextImageRelation = TextImageRelation.TextAboveImage;
             toolStripButton1.Click += toolStripButton1_Click;
             // 
+            // viewPanel
+            // 
+            viewPanel.AutoScroll = true;
+            viewPanel.Dock = DockStyle.Fill;
+            viewPanel.Location = new Point(0, 25);
+            viewPanel.Name = "viewPanel";
+            viewPanel.Size = new Size(1420, 610);
+            viewPanel.TabIndex = 2;
+            viewPanel.Click += drawButton_Click;
+            // 
+            // singleToolStrip
+            // 
+            singleToolStrip.Items.AddRange(new ToolStripItem[] { toolStripLabel9, zoomScaleComboBox });
+            singleToolStrip.Location = new Point(0, 25);
+            singleToolStrip.Name = "singleToolStrip";
+            singleToolStrip.Size = new Size(1420, 25);
+            singleToolStrip.TabIndex = 3;
+            singleToolStrip.Text = "toolStrip1";
+            singleToolStrip.Visible = false;
+            // 
             // toolStripLabel9
             // 
             toolStripLabel9.Font = new Font("맑은 고딕", 9F, FontStyle.Bold);
@@ -207,38 +231,55 @@
             zoomScaleComboBox.Name = "zoomScaleComboBox";
             zoomScaleComboBox.Size = new Size(40, 23);
             zoomScaleComboBox.Text = "1";
+            zoomScaleComboBox.TextChanged += zoomScaleComboBox_TextChanged;
             // 
-            // viewPanel
+            // mapInfoLabel
             // 
-            viewPanel.AutoScroll = true;
-            viewPanel.Dock = DockStyle.Fill;
-            viewPanel.Location = new Point(0, 25);
-            viewPanel.Name = "viewPanel";
-            viewPanel.Size = new Size(1420, 726);
-            viewPanel.TabIndex = 2;
-            viewPanel.Click += drawButton_Click;
+            mapInfoLabel.Dock = DockStyle.Bottom;
+            mapInfoLabel.Location = new Point(0, 635);
+            mapInfoLabel.Name = "mapInfoLabel";
+            mapInfoLabel.Size = new Size(1420, 23);
+            mapInfoLabel.TabIndex = 4;
+            mapInfoLabel.Text = "Map Info";
+            mapInfoLabel.TextAlign = ContentAlignment.MiddleLeft;
+            // 
+            // WpfCheckBox
+            // 
+            WpfCheckBox.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            WpfCheckBox.AutoSize = true;
+            WpfCheckBox.Location = new Point(1304, 639);
+            WpfCheckBox.Name = "WpfCheckBox";
+            WpfCheckBox.Size = new Size(113, 19);
+            WpfCheckBox.TabIndex = 0;
+            WpfCheckBox.Text = "WPF Wafer Map";
+            WpfCheckBox.UseVisualStyleBackColor = true;
             // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.White;
-            ClientSize = new Size(1420, 751);
+            ClientSize = new Size(1420, 658);
+            Controls.Add(WpfCheckBox);
             Controls.Add(viewPanel);
-            Controls.Add(drawInfoToolStrip);
+            Controls.Add(mapInfoLabel);
+            Controls.Add(singleToolStrip);
+            Controls.Add(mainToolStrip);
             Name = "MainForm";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Draw Wafer Map (Gallery)";
             WindowState = FormWindowState.Maximized;
-            drawInfoToolStrip.ResumeLayout(false);
-            drawInfoToolStrip.PerformLayout();
+            mainToolStrip.ResumeLayout(false);
+            mainToolStrip.PerformLayout();
+            singleToolStrip.ResumeLayout(false);
+            singleToolStrip.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
 
         #endregion
 
-        private ToolStrip drawInfoToolStrip;
+        private ToolStrip mainToolStrip;
         private ToolStripLabel toolStripLabel1;
         private ToolStripTextBox waferSizeTextBox;
         private ToolStripLabel toolStripLabel2;
@@ -256,7 +297,10 @@
         private ToolStripLabel toolStripLabel7;
         private ToolStripComboBox mapCount;
         private ToolStripButton toolStripButton1;
+        private ToolStrip singleToolStrip;
         private ToolStripLabel toolStripLabel9;
         private ToolStripComboBox zoomScaleComboBox;
+        private Label mapInfoLabel;
+        private CheckBox WpfCheckBox;
     }
 }

@@ -15,12 +15,12 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace DrawWafer_WPF
+namespace DrawWafer
 {
     /// <summary>
     /// WaferControl.xaml에 대한 상호 작용 논리
     /// </summary>
-    public partial class WaferControl : UserControl
+    public partial class WaferControl_WPF : System.Windows.Controls.UserControl
     {
         //Configuration in micrometers (um) ---
         float WAFER_DIAMETER_UM = 300000.0f;
@@ -57,12 +57,12 @@ namespace DrawWafer_WPF
             }
         }
 
-        public WaferControl()
+        public WaferControl_WPF()
         {
             InitializeComponent();
         }
 
-        public WaferControl(DataTable dt, int mapSize, float waferSize, float dieSizeX, float dieSizeY, float waferEdge, float dieSpace)
+        public WaferControl_WPF(DataTable dt, int mapSize, float waferSize, float dieSizeX, float dieSizeY, float waferEdge, float dieSpace)
         {
             InitializeComponent();
 
@@ -95,12 +95,12 @@ namespace DrawWafer_WPF
         {
         }
 
-        private void ZoomCanvas_MouseMove(object sender, MouseEventArgs e)
+        private void ZoomCanvas_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
         {
             throw new NotImplementedException();
         }
 
-        private void WaferCanvas_MouseMove(object sender, MouseEventArgs e)
+        private void WaferCanvas_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
         {
             throw new NotImplementedException();
         }
@@ -109,7 +109,7 @@ namespace DrawWafer_WPF
         {
             MouseButtonEventArgs newEvent = new MouseButtonEventArgs(e.MouseDevice, e.Timestamp, e.ChangedButton, e.StylusDevice)
             {
-                RoutedEvent = UserControl.MouseDoubleClickEvent,
+                RoutedEvent = System.Windows.Controls.UserControl.MouseDoubleClickEvent,
                 Source = this
             };
 
@@ -133,7 +133,7 @@ namespace DrawWafer_WPF
         private void WaferCanvas_MouseDown(object sender, MouseButtonEventArgs e)
         {
 
-            Point pt = e.GetPosition(WaferCanvas);
+            System.Windows.Point pt = e.GetPosition(WaferCanvas);
 
             float xPos = (float)pt.X;
             float yPos = (float)pt.Y;
@@ -155,7 +155,7 @@ namespace DrawWafer_WPF
         private void ZoomCanvas_MouseDown(object sender, MouseButtonEventArgs e)
         {
 
-            Point pt = e.GetPosition(ZoomCanvas);
+            System.Windows.Point pt = e.GetPosition(ZoomCanvas);
 
             float xPos = (float)pt.X;
             float yPos = (float)pt.Y;
@@ -221,8 +221,8 @@ namespace DrawWafer_WPF
             {
                 Width = WAFER_DIAMETER_PX,
                 Height = WAFER_DIAMETER_PX,
-                Fill = Brushes.White,
-                Stroke = Brushes.Gray,
+                Fill = System.Windows.Media.Brushes.White,
+                Stroke = System.Windows.Media.Brushes.Gray,
                 StrokeThickness = 0.5
             };
             Canvas.SetLeft(wafer, -WAFER_RADIUS_PX);
@@ -232,12 +232,12 @@ namespace DrawWafer_WPF
             // Wafer notch or flat zone 표시 -> notch size는 wafer size의 1.5%
             // notch position wafer 테두리 삭제
             float notchSize = (float)(drawCanvas.Width * 0.015);
-            Rectangle notch = new Rectangle
+            System.Windows.Shapes.Rectangle notch = new System.Windows.Shapes.Rectangle
             {
                 Width = notchSize,
                 Height = 5,
-                Fill = Brushes.White,
-                Stroke = Brushes.White,
+                Fill = System.Windows.Media.Brushes.White,
+                Stroke = System.Windows.Media.Brushes.White,
                 StrokeThickness =1
             };
             Canvas.SetLeft(notch, -(notchSize / 2));
@@ -250,7 +250,7 @@ namespace DrawWafer_WPF
             edgeLine.Y1 = -WAFER_RADIUS_PX;
             edgeLine.X2 = 0;
             edgeLine.Y2 = -WAFER_RADIUS_PX + notchSize;
-            edgeLine.Stroke = Brushes.Gray;
+            edgeLine.Stroke = System.Windows.Media.Brushes.Gray;
             edgeLine.StrokeThickness = 1;
             drawCanvas.Children.Add(edgeLine);
 
@@ -259,7 +259,7 @@ namespace DrawWafer_WPF
             edgeLine.Y1 = -WAFER_RADIUS_PX;
             edgeLine.X2 = 0;
             edgeLine.Y2 = -WAFER_RADIUS_PX + notchSize;
-            edgeLine.Stroke = Brushes.Gray;
+            edgeLine.Stroke = System.Windows.Media.Brushes.Gray;
             edgeLine.StrokeThickness = 1;
             drawCanvas.Children.Add(edgeLine);
 
@@ -272,12 +272,12 @@ namespace DrawWafer_WPF
                 string status = row["Status"].ToString();
                 float xPosPx = xPosUm / SCALE_FACTOR;
                 float yPosPx = yPosUm / SCALE_FACTOR;
-                Rectangle die = new Rectangle
+                System.Windows.Shapes.Rectangle die = new System.Windows.Shapes.Rectangle
                 {
                     Width = DIE_SIZE_X_PX,
                     Height = DIE_SIZE_Y_PX,
-                    Fill = (status == "G" ? Brushes.Blue : Brushes.Red),
-                    Stroke = Brushes.LightGray,
+                    Fill = (status == "G" ? System.Windows.Media.Brushes.Blue : System.Windows.Media.Brushes.Red),
+                    Stroke = System.Windows.Media.Brushes.LightGray,
                     StrokeThickness = 0.5
                 };
                 // Draw Die Rectangle

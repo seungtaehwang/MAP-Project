@@ -1,5 +1,6 @@
 using System;
 using System.Data;
+using System.Windows.Forms.Integration;
 
 namespace DrawWafer
 {
@@ -13,7 +14,8 @@ namespace DrawWafer
         float DIE_SIZE_Y_UM = 4018.0f;
         float SCRIBE_WIDTH_UM = 10.0f;                         // Space between dies
 
-        WaferControl currentMap;
+        object currentMap;
+        string mapType = "WinForm";
 
         public MainForm()
         {
@@ -80,6 +82,17 @@ namespace DrawWafer
         private void drawButton_Click(object sender, EventArgs e)
         {
             this.Cursor = Cursors.WaitCursor;
+            mainToolStrip.Visible = true;
+            singleToolStrip.Visible = false;
+
+            if (WpfCheckBox.Checked)
+            {
+                mapType = "WPF";
+            }
+            else
+            {
+                mapType = "WinForm";
+            }
 
             WAFER_DIAMETER_UM = (float)Convert.ToDouble(waferSizeTextBox.Text);
             EDGE_EXCLUSION_UM = (float)Convert.ToDouble(WaferEdgeTextBox.Text);
@@ -92,6 +105,10 @@ namespace DrawWafer
             int mapSize = (int)((viewPanel.Width - 60) / Convert.ToDouble(columnsCount.Text));
             int plusWidth = mapSize + 2;
             int plusHeight = mapSize + 32;
+            if (mapType == "WPF")
+            {
+                plusHeight = mapSize + 52;
+            }
             int columnCount = Convert.ToInt32(columnsCount.Text);
             int zoomScale = Convert.ToInt32(zoomScaleComboBox.Text);
 
@@ -100,13 +117,33 @@ namespace DrawWafer
                 int top = (irow / columnCount) * (plusHeight + 1);
                 int left = (irow % columnCount) * (plusWidth + 1) + 3;
                 DataTable waferDT = CreateDieDataTable();
-                WaferControl waferControl = new WaferControl(waferDT, mapSize, WAFER_DIAMETER_UM, DIE_SIZE_X_UM, DIE_SIZE_Y_UM, EDGE_EXCLUSION_UM, SCRIBE_WIDTH_UM);
-                viewPanel.Controls.Add(waferControl);
-                waferControl.Left = left;
-                waferControl.Top = top;
-                waferControl.Visible = false;
-                waferControl.DrawWaferMap(zoomScale);
-                waferControl.Visible = true;
+                if (mapType == "WPF")
+                {
+                    WaferControl_WPF waferControlWPF = new WaferControl_WPF(waferDT, mapSize, WAFER_DIAMETER_UM, DIE_SIZE_X_UM, DIE_SIZE_Y_UM, EDGE_EXCLUSION_UM, SCRIBE_WIDTH_UM);
+                    ElementHost elementHost = new ElementHost
+                    {
+                        Child = waferControlWPF,
+                        Left = left,
+                        Top = top,
+                        Width = mapSize + 2,
+                        Height = mapSize + 52,
+                        Visible = false
+                    };
+                    viewPanel.Controls.Add(elementHost);
+                    waferControlWPF.DrawWaferMap();
+                    elementHost.Visible = true;
+                    continue;
+                }
+                else
+                {
+                    WaferControl waferControl = new WaferControl(waferDT, mapSize, WAFER_DIAMETER_UM, DIE_SIZE_X_UM, DIE_SIZE_Y_UM, EDGE_EXCLUSION_UM, SCRIBE_WIDTH_UM);
+                    viewPanel.Controls.Add(waferControl);
+                    waferControl.Left = left;
+                    waferControl.Top = top;
+                    waferControl.Visible = false;
+                    waferControl.DrawWaferMap();
+                    waferControl.Visible = true;
+                }
             }
             this.Cursor = Cursors.Arrow;
         }
@@ -117,5 +154,19 @@ namespace DrawWafer
             colorCode.ShowDialog();
         }
 
+        private void zoomScaleComboBox_TextChanged(object sender, EventArgs e)
+        {
+            int zoomScale = Convert.ToInt32(zoomScaleComboBox.Text);
+            if (mapType == "WPF")
+            {
+                WaferControl_WPF wafer = (WaferControl_WPF)currentMap;
+                wafer.DrawWaferMap(zoomScale);
+            }
+            else
+            {
+                WaferControl wafer = (WaferControl)currentMap;
+                wafer.DrawWaferMap(zoomScale);
+            }
+        }
     }
 }

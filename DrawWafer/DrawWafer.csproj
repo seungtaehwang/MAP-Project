@@ -6,7 +6,13 @@
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
-    <UseWPF>False</UseWPF>
+    <UseWPF>True</UseWPF>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Update="WaferControl_WPF.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
 
 </Project>
