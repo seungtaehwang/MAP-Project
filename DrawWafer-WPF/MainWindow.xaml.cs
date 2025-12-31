@@ -37,7 +37,10 @@ namespace DrawWafer_WPF
         private void ZoomScale_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             float zoomScale = Convert.ToSingle(ZoomScale.Text);
-            if (currentWafer != null) currentWafer.DrawWaferMap(zoomScale);
+            if (currentWafer != null)
+            {
+                currentWafer.DrawWaferMap(zoomScale);
+            }
         }
 
         private DataTable CreateDieDataTable()
