@@ -84,8 +84,25 @@ namespace DrawWafer_WPF
             MapViewer.MouseDoubleClick += MapViewer_MouseDoubleClick;
             WaferCanvas.MouseLeftButtonDown += WaferCanvas_MouseDown;
             ZoomCanvas.MouseLeftButtonDown += ZoomCanvas_MouseDown;
+            //WaferCanvas.MouseMove += WaferCanvas_MouseMove;
+            //ZoomCanvas.MouseMove += ZoomCanvas_MouseMove;
+            ZoomCanvas.PreviewMouseWheel += ZoomCanvas_PreviewMouseWheel;
 
 
+        }
+
+        private void ZoomCanvas_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+        }
+
+        private void ZoomCanvas_MouseMove(object sender, MouseEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void WaferCanvas_MouseMove(object sender, MouseEventArgs e)
+        {
+            throw new NotImplementedException();
         }
 
         private void MapViewer_MouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -107,6 +124,12 @@ namespace DrawWafer_WPF
             e.Handled = true;
         }
 
+        public event MapInfoEventHandler ChipInfoEvent;
+        protected virtual void OnChipInfoEvent(MapInfoEventArgs e)
+        {
+            // 구독자가 있는지 확인 후 이벤트 발생
+            ChipInfoEvent?.Invoke(this, e);
+        }
         private void WaferCanvas_MouseDown(object sender, MouseButtonEventArgs e)
         {
 
@@ -123,7 +146,7 @@ namespace DrawWafer_WPF
                 float yPos2 = Convert.ToSingle(row["PT2_Y"]);
                 if (xPos1 <= xPos && xPos <= xPos2 && yPos1 <= yPos && yPos <= yPos2)
                 {
-                    //MessageBox.Show($"PT1=({xPos1}, {yPos1}), PT2=({xPos2}, {yPos2}), findPosX={xPos}, findPosY={xPos}");
+                    OnChipInfoEvent(new MapInfoEventArgs { Message = $"Chip info : DIE_X = {row["X_Pos"].ToString()}, DIE_Y = {row["Y_Pos"].ToString()} um, DIE SIZE X = {DIE_SIZE_X_UM}, DIE SIZE Y = {DIE_SIZE_Y_UM},  unit (um)" });
                     break;
                 }
             }
@@ -145,7 +168,7 @@ namespace DrawWafer_WPF
                 float yPos2 = Convert.ToSingle(row["PT2_Y"]);
                 if (xPos1 <= xPos && xPos <= xPos2 && yPos1 <= yPos && yPos <= yPos2)
                 {
-                    MessageBox.Show($"PT1=({xPos1},{yPos1}), PT2=({xPos2},{yPos2}), findPosX={xPos}, findPosY={xPos}");
+                    OnChipInfoEvent(new MapInfoEventArgs { Message = $"Chip info : DIE_X = {row["X_Pos"].ToString()}, DIE_Y = {row["Y_Pos"].ToString()} um, DIE SIZE X = {DIE_SIZE_X_UM}, DIE SIZE Y = {DIE_SIZE_Y_UM},  unit (um)" });
                     break;
                 }
             }
@@ -160,6 +183,9 @@ namespace DrawWafer_WPF
         public void DrawWaferMap(float zoomScale = 1.0f)
         {
             Canvas drawCanvas = null;
+            ZoomCanvas.Children.Clear();
+            WaferCanvas.Children.Clear();
+
             ZOOM_SCALE = zoomScale;
 
             // Zoom Scale에 따른 Cnavas 설정한다.
@@ -289,4 +315,15 @@ namespace DrawWafer_WPF
             }
         }
     }
+
+    /// <summary>
+    /// Map Info Event Args
+    /// </summary>
+    public class MapInfoEventArgs : EventArgs
+    {
+        public string Message { get; set; }
+    }
+
+    // 델리게이트 선언 (이벤트의 시그니처 정의)
+    public delegate void MapInfoEventHandler(object sender, MapInfoEventArgs e);
 }

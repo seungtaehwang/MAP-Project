@@ -114,6 +114,7 @@ namespace DrawWafer_WPF
 
             MapViewer.Visibility = Visibility.Hidden;
             GalleryView.Children.Clear();
+            SingleViewer.Children.Clear();
             GalleryView.Height = MapViewer.Height;
             MapViewer.ScrollToTop();
             MapViewer.ScrollToHome();
@@ -133,6 +134,7 @@ namespace DrawWafer_WPF
                 Canvas.SetTop(waferControl, top);
                 GalleryView.Children.Add(waferControl);
                 waferControl.MouseDoubleClick += WaferControl_MouseDoubleClick;
+                waferControl.ChipInfoEvent += WaferControl_ChipInfoEvent;
             }
             GalleryView.Height = ((Convert.ToInt32(MapCount.Text) - 1) / columnCount + 1) * (plusHeight + 1);
             MapViewer.Visibility = Visibility.Visible;
@@ -141,24 +143,36 @@ namespace DrawWafer_WPF
 
         }
 
+        private void WaferControl_ChipInfoEvent(object sender, MapInfoEventArgs e)
+        {
+            MapInfo.Content = e.Message;
+        }
+
         private void WaferControl_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             if (currentWafer != sender)
             {
+                MainToolbar.Visibility = Visibility.Hidden;
+                SingleToolbar.Visibility = Visibility.Visible;
                 currentWafer = (WaferControl)sender;
                 currentLeft = (int)Canvas.GetLeft(currentWafer);
                 currentTop = (int)Canvas.GetTop(currentWafer);
                 currentMapSize = (float)currentWafer.MapSize;
                 GalleryView.Children.Remove(currentWafer);
                 MapViewer.Visibility = Visibility.Hidden;
-                currentWafer.MapSize = (int)(MapGrid.ActualHeight- MainToolbar.ActualHeight - MapInfo.Height - 52);
+                SingleViewer.Visibility = Visibility.Visible;
+                currentWafer.MapSize = (int)(SingleViewer.ActualHeight - 52);
                 currentWafer.DrawWaferMap();
-                MapGrid.Children.Add(currentWafer);
+                SingleViewer.Children.Add(currentWafer);
             }
             else
             {
+                MainToolbar.Visibility = Visibility.Visible;
+                SingleToolbar.Visibility = Visibility.Hidden;
+                SingleViewer.Children.Remove(currentWafer);
+                SingleViewer.Children.Clear();
+                SingleViewer.Visibility = Visibility.Hidden;
                 currentWafer.MapSize = (int)currentMapSize;
-                MapGrid.Children.Remove(currentWafer);
                 currentWafer.DrawWaferMap();
                 MapViewer.Visibility = Visibility.Visible;
                 Canvas.SetLeft(currentWafer, currentLeft);

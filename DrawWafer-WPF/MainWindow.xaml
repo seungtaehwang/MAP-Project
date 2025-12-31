@@ -85,6 +85,7 @@
             VerticalScrollBarVisibility="Auto">
             <Canvas x:Name="GalleryView"/>
         </ScrollViewer>
+        <StackPanel x:Name="SingleViewer" Margin="0,30,0,25"/>
         <Label x:Name="MapInfo" Content="Zoom Scale :" Height="25" HorizontalAlignment="Left"  VerticalAlignment="Bottom"/>
     </Grid>
 </Window>
