@@ -23,10 +23,21 @@ namespace DrawWafer_WPF
         float DIE_SIZE_X_UM = 5096.0f;
         float DIE_SIZE_Y_UM = 4018.0f;
         float SCRIBE_WIDTH_UM = 10.0f;                         // Space between dies
+        WaferControl currentWafer;
+        int currentLeft = 0;
+        int currentTop = 0;
+        float currentMapSize = 0;
 
         public MainWindow()
         {
             InitializeComponent();
+            ZoomScale.SelectionChanged += ZoomScale_SelectionChanged;
+        }
+
+        private void ZoomScale_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            float zoomScale = Convert.ToSingle(ZoomScale.Text);
+            if (currentWafer != null) currentWafer.DrawWaferMap(zoomScale);
         }
 
         private DataTable CreateDieDataTable()
@@ -90,7 +101,11 @@ namespace DrawWafer_WPF
         {
             this.Cursor = Cursors.Wait;
 
-            float zoomScale = Convert.ToSingle(ZoomScale.Text);
+            currentWafer = null;
+            ZoomScale.SelectionChanged -= ZoomScale_SelectionChanged;
+            ZoomScale.Text = "1";
+            ZoomScale.SelectionChanged += ZoomScale_SelectionChanged;
+
             WAFER_DIAMETER_UM = (float)Convert.ToDouble(WaferSize.Text);
             EDGE_EXCLUSION_UM = (float)Convert.ToDouble(WaferEdge.Text);
             DIE_SIZE_X_UM = (float)Convert.ToDouble(DieSizeX.Text);
@@ -113,16 +128,45 @@ namespace DrawWafer_WPF
                 int left = (irow % columnCount) * (plusWidth + 1) + 3;
                 DataTable waferDT = CreateDieDataTable();
                 WaferControl waferControl = new WaferControl(waferDT, mapSize, WAFER_DIAMETER_UM, DIE_SIZE_X_UM, DIE_SIZE_Y_UM, EDGE_EXCLUSION_UM, SCRIBE_WIDTH_UM);
-                waferControl.DrawWaferMap(zoomScale);
+                waferControl.DrawWaferMap();
                 Canvas.SetLeft(waferControl, left);
                 Canvas.SetTop(waferControl, top);
                 GalleryView.Children.Add(waferControl);
+                waferControl.MouseDoubleClick += WaferControl_MouseDoubleClick;
             }
             GalleryView.Height = ((Convert.ToInt32(MapCount.Text) - 1) / columnCount + 1) * (plusHeight + 1);
             MapViewer.Visibility = Visibility.Visible;
 
             this.Cursor = Cursors.Arrow; // 또는 원래 상태로
 
+        }
+
+        private void WaferControl_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (currentWafer != sender)
+            {
+                currentWafer = (WaferControl)sender;
+                currentLeft = (int)Canvas.GetLeft(currentWafer);
+                currentTop = (int)Canvas.GetTop(currentWafer);
+                currentMapSize = (float)currentWafer.MapSize;
+                GalleryView.Children.Remove(currentWafer);
+                MapViewer.Visibility = Visibility.Hidden;
+                currentWafer.MapSize = (int)(MapGrid.ActualHeight- MainToolbar.ActualHeight - MapInfo.Height - 52);
+                currentWafer.DrawWaferMap();
+                MapGrid.Children.Add(currentWafer);
+            }
+            else
+            {
+                currentWafer.MapSize = (int)currentMapSize;
+                MapGrid.Children.Remove(currentWafer);
+                currentWafer.DrawWaferMap();
+                MapViewer.Visibility = Visibility.Visible;
+                Canvas.SetLeft(currentWafer, currentLeft);
+                Canvas.SetTop(currentWafer, currentTop);
+                GalleryView.Children.Add(currentWafer);
+                currentWafer = null;
+            }
+            e.Handled = true;
         }
     }
 }

@@ -42,6 +42,21 @@ namespace DrawWafer_WPF
 
         DataTable waferMapTable = new DataTable();
 
+        int realMapSize = 0;
+        public int MapSize
+        { 
+            get { return realMapSize; }  
+            set 
+            { 
+                realMapSize = value;
+                // Wafer Control Size
+                this.Width = realMapSize + 2;
+                this.Height = realMapSize + 50 + 2;
+                WaferCanvas.Width = realMapSize;
+                WaferCanvas.Height = realMapSize;
+            }
+        }
+
         public WaferControl()
         {
             InitializeComponent();
@@ -52,11 +67,12 @@ namespace DrawWafer_WPF
             InitializeComponent();
 
             waferMapTable = dt;
+            realMapSize = mapSize;
             // Wafer Control Size
-            this.Width = mapSize + 2;
-            this.Height = mapSize + 50 + 2;
-            WaferCanvas.Width = mapSize;
-            WaferCanvas.Height = mapSize;
+            this.Width = realMapSize + 2;
+            this.Height = realMapSize + 50 + 2;
+            WaferCanvas.Width = realMapSize;
+            WaferCanvas.Height = realMapSize;
             // Configuration
             WAFER_DIAMETER_UM = waferSize;
             EDGE_EXCLUSION_UM = waferEdge;
@@ -64,9 +80,31 @@ namespace DrawWafer_WPF
             DIE_SIZE_Y_UM = dieSizeY;
             SCRIBE_WIDTH_UM = dieSpace;
 
+            MapViewer.PreviewMouseWheel += MapViewer_PreviewMouseWheel;
+            MapViewer.MouseDoubleClick += MapViewer_MouseDoubleClick;
             WaferCanvas.MouseLeftButtonDown += WaferCanvas_MouseDown;
             ZoomCanvas.MouseLeftButtonDown += ZoomCanvas_MouseDown;
 
+
+        }
+
+        private void MapViewer_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            MouseButtonEventArgs newEvent = new MouseButtonEventArgs(e.MouseDevice, e.Timestamp, e.ChangedButton, e.StylusDevice)
+            {
+                RoutedEvent = UserControl.MouseDoubleClickEvent,
+                Source = this
+            };
+
+            // 이벤트를 부모 Grid에 발생시킵니다.
+            this.RaiseEvent(newEvent);
+        }
+
+        private void MapViewer_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            ScrollViewer scv = (ScrollViewer)sender;
+            scv.ScrollToVerticalOffset(scv.VerticalOffset - e.Delta);
+            e.Handled = true;
         }
 
         private void WaferCanvas_MouseDown(object sender, MouseButtonEventArgs e)
@@ -85,10 +123,11 @@ namespace DrawWafer_WPF
                 float yPos2 = Convert.ToSingle(row["PT2_Y"]);
                 if (xPos1 <= xPos && xPos <= xPos2 && yPos1 <= yPos && yPos <= yPos2)
                 {
-                    MessageBox.Show($"PT1=({xPos1}, {yPos1}), PT1=({xPos2}, {yPos2}), findPosX={xPos}, findPosY={xPos}");
+                    //MessageBox.Show($"PT1=({xPos1}, {yPos1}), PT2=({xPos2}, {yPos2}), findPosX={xPos}, findPosY={xPos}");
                     break;
                 }
             }
+            e.Handled = true;
         }
         private void ZoomCanvas_MouseDown(object sender, MouseButtonEventArgs e)
         {
@@ -96,7 +135,7 @@ namespace DrawWafer_WPF
             Point pt = e.GetPosition(ZoomCanvas);
 
             float xPos = (float)pt.X;
-            float yPos = (float)-pt.Y;
+            float yPos = (float)pt.Y;
 
             foreach (DataRow row in waferMapTable.Rows)
             {
@@ -106,10 +145,11 @@ namespace DrawWafer_WPF
                 float yPos2 = Convert.ToSingle(row["PT2_Y"]);
                 if (xPos1 <= xPos && xPos <= xPos2 && yPos1 <= yPos && yPos <= yPos2)
                 {
-                    MessageBox.Show($"PT1=({xPos1},{yPos1}), PT1=({xPos2},{yPos2}), findPosX={xPos}, findPosY={xPos}");
+                    MessageBox.Show($"PT1=({xPos1},{yPos1}), PT2=({xPos2},{yPos2}), findPosX={xPos}, findPosY={xPos}");
                     break;
                 }
             }
+            e.Handled = true;
         }
 
         public void DrawWaferMap()
