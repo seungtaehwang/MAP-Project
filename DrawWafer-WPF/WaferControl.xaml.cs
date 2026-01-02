@@ -146,7 +146,7 @@ namespace DrawWafer_WPF
                 float yPos2 = Convert.ToSingle(row["PT2_Y"]);
                 if (xPos1 <= xPos && xPos <= xPos2 && yPos1 <= yPos && yPos <= yPos2)
                 {
-                    OnChipInfoEvent(new MapInfoEventArgs { Message = $"Chip info : DIE_X = {row["X_Pos"].ToString()}, DIE_Y = {row["Y_Pos"].ToString()} um, DIE SIZE X = {DIE_SIZE_X_UM}, DIE SIZE Y = {DIE_SIZE_Y_UM},  Unit (um)" });
+                    OnChipInfoEvent(new MapInfoEventArgs { Message = $"Chip Info (um) : Die Pos=[ ({row["X_POS"].ToString()}, {row["Y_POS"].ToString()}) ], Click Pos=[ {xPos * SCALE_FACTOR}, {yPos * SCALE_FACTOR} ], Die Size = [ {DIE_SIZE_X_UM}, {DIE_SIZE_Y_UM} ]" });
                     break;
                 }
             }

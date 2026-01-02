@@ -45,13 +45,15 @@
             toolStripLabel7 = new ToolStripLabel();
             mapCount = new ToolStripComboBox();
             drawButton = new ToolStripButton();
-            toolStripButton1 = new ToolStripButton();
-            viewPanel = new Panel();
+            colorSettingButton = new ToolStripButton();
+            gallerView = new Panel();
             singleToolStrip = new ToolStrip();
             toolStripLabel9 = new ToolStripLabel();
             zoomScaleComboBox = new ToolStripComboBox();
             mapInfoLabel = new Label();
             WpfCheckBox = new CheckBox();
+            singleView = new Panel();
+            testButton = new Button();
             mainToolStrip.SuspendLayout();
             singleToolStrip.SuspendLayout();
             SuspendLayout();
@@ -59,7 +61,7 @@
             // mainToolStrip
             // 
             mainToolStrip.BackColor = SystemColors.Control;
-            mainToolStrip.Items.AddRange(new ToolStripItem[] { toolStripLabel1, waferSizeTextBox, toolStripLabel2, WaferEdgeTextBox, toolStripLabel3, dieSizeXTextBox, toolStripLabel4, dieSizeYTextBox, toolStripLabel5, scrbeWidthTextBox, toolStripLabel6, columnsCount, toolStripLabel7, mapCount, drawButton, toolStripButton1 });
+            mainToolStrip.Items.AddRange(new ToolStripItem[] { toolStripLabel1, waferSizeTextBox, toolStripLabel2, WaferEdgeTextBox, toolStripLabel3, dieSizeXTextBox, toolStripLabel4, dieSizeYTextBox, toolStripLabel5, scrbeWidthTextBox, toolStripLabel6, columnsCount, toolStripLabel7, mapCount, drawButton, colorSettingButton });
             mainToolStrip.Location = new Point(0, 0);
             mainToolStrip.Name = "mainToolStrip";
             mainToolStrip.Size = new Size(1420, 25);
@@ -184,27 +186,27 @@
             drawButton.Text = "Draw Map";
             drawButton.Click += drawButton_Click;
             // 
-            // toolStripButton1
+            // colorSettingButton
             // 
-            toolStripButton1.BackColor = Color.Violet;
-            toolStripButton1.DisplayStyle = ToolStripItemDisplayStyle.Text;
-            toolStripButton1.Image = (Image)resources.GetObject("toolStripButton1.Image");
-            toolStripButton1.ImageTransparentColor = Color.Magenta;
-            toolStripButton1.Name = "toolStripButton1";
-            toolStripButton1.Size = new Size(82, 22);
-            toolStripButton1.Text = "Color Setting";
-            toolStripButton1.TextImageRelation = TextImageRelation.TextAboveImage;
-            toolStripButton1.Click += toolStripButton1_Click;
+            colorSettingButton.BackColor = Color.Violet;
+            colorSettingButton.DisplayStyle = ToolStripItemDisplayStyle.Text;
+            colorSettingButton.Image = (Image)resources.GetObject("colorSettingButton.Image");
+            colorSettingButton.ImageTransparentColor = Color.Magenta;
+            colorSettingButton.Name = "colorSettingButton";
+            colorSettingButton.Size = new Size(82, 22);
+            colorSettingButton.Text = "Color Setting";
+            colorSettingButton.TextImageRelation = TextImageRelation.TextAboveImage;
+            colorSettingButton.Click += colorSettingButton_Click;
             // 
-            // viewPanel
+            // gallerView
             // 
-            viewPanel.AutoScroll = true;
-            viewPanel.Dock = DockStyle.Fill;
-            viewPanel.Location = new Point(0, 25);
-            viewPanel.Name = "viewPanel";
-            viewPanel.Size = new Size(1420, 610);
-            viewPanel.TabIndex = 2;
-            viewPanel.Click += drawButton_Click;
+            gallerView.AutoScroll = true;
+            gallerView.Dock = DockStyle.Fill;
+            gallerView.Location = new Point(0, 25);
+            gallerView.Name = "gallerView";
+            gallerView.Size = new Size(1420, 610);
+            gallerView.TabIndex = 2;
+            gallerView.Click += drawButton_Click;
             // 
             // singleToolStrip
             // 
@@ -254,14 +256,36 @@
             WpfCheckBox.Text = "WPF Wafer Map";
             WpfCheckBox.UseVisualStyleBackColor = true;
             // 
+            // singleView
+            // 
+            singleView.AutoScroll = true;
+            singleView.Dock = DockStyle.Fill;
+            singleView.Location = new Point(0, 25);
+            singleView.Name = "singleView";
+            singleView.Size = new Size(1420, 610);
+            singleView.TabIndex = 5;
+            // 
+            // testButton
+            // 
+            testButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            testButton.Location = new Point(1373, 0);
+            testButton.Name = "testButton";
+            testButton.Size = new Size(41, 23);
+            testButton.TabIndex = 6;
+            testButton.Text = "Test";
+            testButton.UseVisualStyleBackColor = true;
+            testButton.Click +=testButton1_Click;
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.White;
             ClientSize = new Size(1420, 658);
+            Controls.Add(testButton);
+            Controls.Add(gallerView);
+            Controls.Add(singleView);
             Controls.Add(WpfCheckBox);
-            Controls.Add(viewPanel);
             Controls.Add(mapInfoLabel);
             Controls.Add(singleToolStrip);
             Controls.Add(mainToolStrip);
@@ -269,6 +293,7 @@
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Draw Wafer Map (Gallery)";
             WindowState = FormWindowState.Maximized;
+            FormClosed += MainForm_FormClosed;
             mainToolStrip.ResumeLayout(false);
             mainToolStrip.PerformLayout();
             singleToolStrip.ResumeLayout(false);
@@ -290,17 +315,19 @@
         private ToolStripTextBox dieSizeYTextBox;
         private ToolStripLabel toolStripLabel5;
         private ToolStripTextBox scrbeWidthTextBox;
-        private Panel viewPanel;
+        private Panel gallerView;
         private ToolStripLabel toolStripLabel6;
         private ToolStripComboBox columnsCount;
         private ToolStripButton drawButton;
         private ToolStripLabel toolStripLabel7;
         private ToolStripComboBox mapCount;
-        private ToolStripButton toolStripButton1;
+        private ToolStripButton colorSettingButton;
         private ToolStrip singleToolStrip;
         private ToolStripLabel toolStripLabel9;
         private ToolStripComboBox zoomScaleComboBox;
         private Label mapInfoLabel;
         private CheckBox WpfCheckBox;
+        private Panel singleView;
+        private Button testButton;
     }
 }

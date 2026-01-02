@@ -1,5 +1,6 @@
 using System;
 using System.Data;
+using System.Windows.Automation;
 using System.Windows.Forms.Integration;
 
 namespace DrawWafer
@@ -14,8 +15,12 @@ namespace DrawWafer
         float DIE_SIZE_Y_UM = 4018.0f;
         float SCRIBE_WIDTH_UM = 10.0f;                         // Space between dies
 
-        object currentMap;
-        string mapType = "WinForm";
+        string controlType = "WinForm";
+        object? currentMap = null;
+        int currentLeft = 0;
+        int currentTop = 0;
+        int currentWidth = 0;
+        int currentHeight = 0;
 
         public MainForm()
         {
@@ -84,14 +89,21 @@ namespace DrawWafer
             this.Cursor = Cursors.WaitCursor;
             mainToolStrip.Visible = true;
             singleToolStrip.Visible = false;
+            singleView.Visible = false;
+            gallerView.Visible = true;
+            gallerView.BringToFront();
+            currentMap = null;
+            singleView.Controls.Clear();
+            gallerView.Controls.Clear();
+            gallerView.Visible = false;
 
             if (WpfCheckBox.Checked)
             {
-                mapType = "WPF";
+                controlType = "WPF";
             }
             else
             {
-                mapType = "WinForm";
+                controlType = "WinForm";
             }
 
             WAFER_DIAMETER_UM = (float)Convert.ToDouble(waferSizeTextBox.Text);
@@ -100,12 +112,10 @@ namespace DrawWafer
             DIE_SIZE_Y_UM = (float)Convert.ToDouble(dieSizeYTextBox.Text);
             SCRIBE_WIDTH_UM = (float)Convert.ToDouble(scrbeWidthTextBox.Text);
 
-            viewPanel.Controls.Clear();
-
-            int mapSize = (int)((viewPanel.Width - 60) / Convert.ToDouble(columnsCount.Text));
+            int mapSize = (int)((gallerView.Width - 60) / Convert.ToDouble(columnsCount.Text));
             int plusWidth = mapSize + 2;
             int plusHeight = mapSize + 32;
-            if (mapType == "WPF")
+            if (controlType == "WPF")
             {
                 plusHeight = mapSize + 52;
             }
@@ -117,7 +127,7 @@ namespace DrawWafer
                 int top = (irow / columnCount) * (plusHeight + 1);
                 int left = (irow % columnCount) * (plusWidth + 1) + 3;
                 DataTable waferDT = CreateDieDataTable();
-                if (mapType == "WPF")
+                if (controlType == "WPF")
                 {
                     WaferControl_WPF waferControlWPF = new WaferControl_WPF(waferDT, mapSize, WAFER_DIAMETER_UM, DIE_SIZE_X_UM, DIE_SIZE_Y_UM, EDGE_EXCLUSION_UM, SCRIBE_WIDTH_UM);
                     ElementHost elementHost = new ElementHost
@@ -129,44 +139,132 @@ namespace DrawWafer
                         Height = mapSize + 52,
                         Visible = false
                     };
-                    viewPanel.Controls.Add(elementHost);
+                    gallerView.Controls.Add(elementHost);
                     waferControlWPF.DrawWaferMap();
+                    waferControlWPF.ChipInfoEvent += WaferControlWPF_ChipInfoEvent;
                     elementHost.Visible = true;
                     continue;
                 }
                 else
                 {
                     WaferControl waferControl = new WaferControl(waferDT, mapSize, WAFER_DIAMETER_UM, DIE_SIZE_X_UM, DIE_SIZE_Y_UM, EDGE_EXCLUSION_UM, SCRIBE_WIDTH_UM);
-                    viewPanel.Controls.Add(waferControl);
+                    gallerView.Controls.Add(waferControl);
                     waferControl.Left = left;
                     waferControl.Top = top;
                     waferControl.Visible = false;
-                    waferControl.DrawWaferMap();
+                    waferControl.DrawMap();
                     waferControl.Visible = true;
+                    waferControl.OnChipInfo += WaferControl_OnChipInfo;
+                    waferControl.MouseClick += WaferControl_MouseClick;
+                    waferControl.DoubleClick += WaferControl_DoubleClick;
                 }
             }
+            gallerView.Visible = true;
             this.Cursor = Cursors.Arrow;
         }
 
-        private void toolStripButton1_Click(object sender, EventArgs e)
+        private void WaferControl_DoubleClick(object? sender, EventArgs e)
         {
-            ColorCode colorCode = new ColorCode();
-            colorCode.ShowDialog();
+            if (sender != null && currentMap != sender)
+            {
+                WaferControl wc = (WaferControl)sender;
+                currentMap = wc;
+                currentLeft = wc.Left;
+                currentTop = wc.Top;
+                currentWidth = wc.Width;
+                currentHeight = wc.Height;
+                wc.Top = 0;
+                wc.Height = gallerView.Height;
+                wc.Width = wc.Height-31;
+                wc.Left = (gallerView.Width - wc.Width) / 2;
+                wc.DrawMap();
+                singleView.Controls.Add(wc);
+                singleView.Visible = true;
+                gallerView.Visible = false;
+                singleView.BringToFront();
+                singleView.Invalidate();
+            }
+            else if (currentMap != null && currentMap == sender)
+            {
+                WaferControl wc = (WaferControl)currentMap;
+                wc.Left = currentLeft;
+                wc.Top = currentTop;
+                wc.Width = currentWidth;
+                wc.Height = currentHeight;
+                wc.DrawMap();
+                currentMap = null;
+                gallerView.Controls.Add(wc);
+                singleView.Visible = false;
+                gallerView.Visible = true;
+                gallerView.BringToFront();
+                gallerView.Invalidate();
+            }
+
+        }
+
+        private void WaferControlWPF_ChipInfoEvent(object sender, MapInfoEventArgs e)
+        {
+            mapInfoLabel.Text = e.Message;
+        }
+
+        private void WaferControl_MouseClick(object? sender, MouseEventArgs e)
+        {
+            if (gallerView.Controls.Count > 0)
+            {
+                foreach (WaferControl wc in gallerView.Controls)
+                {
+                    if (sender.Equals(wc))
+                    {
+                        wc.BorderColor = Color.Blue;
+                    }
+                    else
+                    {
+                        wc.BorderColor = Color.LightGray;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Chip Information Event Handler
+        /// </summary>
+        /// <param name="message"></param>
+        private void WaferControl_OnChipInfo(string message)
+        {
+            mapInfoLabel.Text = message;
+        }
+
+        private void testButton1_Click(object sender, EventArgs e)
+        {
+            if (!gallerView.Visible)
+                gallerView.BringToFront();
+            else
+                singleView.BringToFront();
         }
 
         private void zoomScaleComboBox_TextChanged(object sender, EventArgs e)
         {
             int zoomScale = Convert.ToInt32(zoomScaleComboBox.Text);
-            if (mapType == "WPF")
+            if (controlType == "WPF")
             {
                 WaferControl_WPF wafer = (WaferControl_WPF)currentMap;
-                wafer.DrawWaferMap(zoomScale);
+                if (wafer != null) wafer.DrawWaferMap(zoomScale);
             }
             else
             {
                 WaferControl wafer = (WaferControl)currentMap;
-                wafer.DrawWaferMap(zoomScale);
+                if (wafer != null) wafer.DrawMap(zoomScale);
             }
+        }
+
+        private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+        }
+
+        private void colorSettingButton_Click(object sender, EventArgs e)
+        {
+            ColorCode colorCode = new ColorCode();
+            colorCode.ShowDialog();
         }
     }
 }

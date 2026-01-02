@@ -11,6 +11,11 @@ using System.Windows.Forms;
 
 namespace DrawWafer
 {
+    public delegate void ChipInfoEvent(string message);
+    public delegate void ShotInfoEvent(string message);
+    public delegate void PointInfoEvent(string message);
+    public delegate void DefectInfoEvent(string message);
+
     public partial class WaferControl : UserControl
     {
         //Configuration in micrometers (um) ---
@@ -35,17 +40,21 @@ namespace DrawWafer
         float STEP_Y_PX = 0.0f;
         float WAFER_RADIUS_PX = 0.0f;
 
-        DataTable waferMapTable = new DataTable();
+        DataTable chipTable = new DataTable();
+        DataTable shotTable = new DataTable();
+        DataTable dataTable = new DataTable();
 
         private Bitmap canvasBitmap;
         private Graphics canvasGraphics;
+
+        public event ChipInfoEvent? OnChipInfo;
 
         public WaferControl(DataTable dt, int mapSize, float waferSize, float dieSizeX, float dieSizeY, float waferEdge, float dieSpace)
         {
             InitializeComponent();
             this.SetStyle(ControlStyles.ResizeRedraw, true);
 
-            waferMapTable = dt;
+            chipTable = dt;
 
             // Wafer Control Size
             this.Width = mapSize + 2;
@@ -60,27 +69,12 @@ namespace DrawWafer
 
 
             // mapBox(WaferMap) Event Mapping
-            mapBox.MouseDown += MapBox_MouseDown;
+            mapBox.MouseUp += MapBox_MouseUp;
+            mapBox.DoubleClick += mapBox_DoubleClick;
+            mapBox.MouseClick += MapBox_MouseClick;
+            mapPanel.Scroll += mapPanel_Scroll;
         }
 
-        private void MapBox_MouseDown(object? sender, MouseEventArgs e)
-        {
-            float xPos = (float)e.X - WAFER_RADIUS_PX;
-            float yPos = (float)-e.Y + WAFER_RADIUS_PX;
-
-            foreach (DataRow row in waferMapTable.Rows)
-            {
-                float xPos1 = Convert.ToSingle(row["PT1_X"]);
-                float yPos1 = Convert.ToSingle(row["PT1_Y"]);
-                float xPos2 = Convert.ToSingle(row["PT2_X"]);
-                float yPos2 = Convert.ToSingle(row["PT2_Y"]);
-                if (xPos1 <= xPos && xPos <= xPos2 && yPos1 <= yPos && yPos <= yPos2)
-                {
-                    MessageBox.Show($"PT1=({xPos1}, {yPos1}), PT1=({xPos2}, {yPos2}), findPosX={xPos}, findPosY={xPos}");
-                    break;
-                }
-            }
-        }
 
         private Color _borderColor = Color.LightGray; // Default border color
         [DefaultValue(typeof(Color), "LightGray")] // 특성으로 기본값 지정
@@ -105,13 +99,19 @@ namespace DrawWafer
                 e.Graphics.DrawRectangle(pen, rect);
             }
         }
-
-        public void DrawWaferMap()
+        public void ClearMap()
         {
-            DrawWaferMap(1.0f);
+            if (canvasGraphics != null)
+            {
+                canvasGraphics.Clear(Color.White);
+                mapBox.Refresh();
+            }
         }
-
-        public void DrawWaferMap(float zoomScale = 1.0f)
+        public void DrawMap()
+        {
+            DrawMap(1.0f);
+        }
+        public void DrawMap(float zoomScale = 1.0f)
         {
             ZOOM_SCALE = zoomScale;
 
@@ -133,6 +133,8 @@ namespace DrawWafer
             // Initialize Canvas
             canvasBitmap = new Bitmap(mapBox.Width, mapBox.Height);
             canvasGraphics = Graphics.FromImage(canvasBitmap);
+            canvasGraphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+            canvasGraphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
             canvasGraphics.Clear(Color.White);
             mapBox.Image = canvasBitmap;
 
@@ -145,7 +147,7 @@ namespace DrawWafer
             canvasGraphics.TranslateTransform(centerX, centerY);
             // 2. Y축을 상하 반전시켜 수학적 좌표계와 일치시킴 (Y값이 위로 갈수록 증가)
             canvasGraphics.ScaleTransform(1, -1);
-            
+
             // um -> Pixel로 환산한 변수값 설정한다.
             SCALE_FACTOR = WAFER_DIAMETER_UM / (float)mapBox.Width;
             WAFER_DIAMETER_PX = WAFER_DIAMETER_UM / SCALE_FACTOR;
@@ -172,7 +174,21 @@ namespace DrawWafer
             canvasGraphics.DrawLine(new Pen(Color.Gray, 1), (notchSize / 2), -WAFER_RADIUS_PX, 0, -WAFER_RADIUS_PX + notchSize);
 
             // Draw Chip
-            foreach (DataRow row in waferMapTable.Rows)
+            if (chipTable != null &&  chipTable.Rows.Count > 0)
+            {
+                DrawChip();
+            }
+
+            mapBox.Refresh();
+        }
+        /// <summary>
+        /// Draw Chip
+        /// </summary>
+        public void DrawChip()
+        {
+            Pen pen = new Pen(Color.LightGray, 1);
+
+            foreach (DataRow row in chipTable.Rows)
             {
                 float xPosUm = Convert.ToSingle(row["X_POS"]);
                 float yPosUm = Convert.ToSingle(row["Y_POS"]);
@@ -196,12 +212,44 @@ namespace DrawWafer
                 row["PT2_X"] = xPosPx + DIE_SIZE_X_PX;
                 row["PT2_Y"] = yPosPx + DIE_SIZE_Y_PX;
             }
-            mapBox.Refresh();
         }
 
         private void mapPanel_Scroll(object sender, ScrollEventArgs e)
         {
             mapBox.Refresh();
+        }
+
+        private void MapBox_MouseUp(object? sender, MouseEventArgs e)
+        {
+            float xPos = (float)e.X - WAFER_RADIUS_PX;
+            float yPos = (float)-e.Y + WAFER_RADIUS_PX;
+
+            if (e.Button == MouseButtons.Left)
+            { 
+                foreach (DataRow row in chipTable.Rows)
+                {
+                    float xPos1 = Convert.ToSingle(row["PT1_X"]);
+                    float yPos1 = Convert.ToSingle(row["PT1_Y"]);
+                    float xPos2 = Convert.ToSingle(row["PT2_X"]);
+                    float yPos2 = Convert.ToSingle(row["PT2_Y"]);
+                    if (xPos1 <= xPos && xPos <= xPos2 && yPos1 <= yPos && yPos <= yPos2)
+                    {
+                        string chipinf = $"Chip Info (um) : Die Pos=[ ({row["X_POS"].ToString()}, {row["Y_POS"].ToString()}) ], Click Pos=[ {xPos * SCALE_FACTOR}, {yPos * SCALE_FACTOR} ], Die Size = [ {DIE_SIZE_X_UM}, {DIE_SIZE_Y_UM} ]";
+                        OnChipInfo?.Invoke(chipinf);  
+                        break;
+                    }
+                }
+            }
+        }
+
+        private void mapBox_DoubleClick(object sender, EventArgs e)
+        {
+            this.OnDoubleClick(e);
+        }
+        private void MapBox_MouseClick(object? sender, MouseEventArgs e)
+        {
+            if (this.BorderColor != Color.Blue)
+                this.OnMouseClick(e);
         }
     }
 }

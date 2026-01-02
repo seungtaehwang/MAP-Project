@@ -30,7 +30,9 @@ namespace DrawWafer
             midc = midBox.BackColor;
             endc = endBox.BackColor;
             int step = Convert.ToInt32(stepComboBox.Text);
-
+            Color scolor;
+            Color ecolor;
+            List<Color> cList;
             switch (type)
             {
                 case "One":
@@ -44,18 +46,108 @@ namespace DrawWafer
                     colorList = GetGradientColor(startc, midc, endc, step);
                     break;
                 case "Parula":
+                    colorList = new List<Color>();
+
+                    scolor = Color.FromArgb(62, 39, 169);
+                    ecolor = Color.FromArgb(53, 121, 254);
+
+                    cList = GetGradientColor(scolor, ecolor, 26);
+                    for (int i = 0; i < cList.Count; i++)
+                    {
+                        colorList.Add(cList[i]);
+                    }
+                    scolor = Color.FromArgb(53, 121, 254);
+                    ecolor = Color.FromArgb(16, 191, 187);
+                    cList = GetGradientColor(scolor, ecolor, 26);
+                    for (int i = 1; i < cList.Count; i++)
+                    {
+                        colorList.Add(cList[i]);
+                    }
+                    scolor = Color.FromArgb(16, 191, 187);
+                    ecolor = Color.FromArgb(200, 194, 41);
+                    cList = GetGradientColor(scolor, ecolor, 26);
+                    for (int i = 1; i < cList.Count; i++)
+                    {
+                        colorList.Add(cList[i]);
+                    }
+                    scolor = Color.FromArgb(200, 194, 41);
+                    ecolor = Color.FromArgb(250, 252, 21);
+                    cList = GetGradientColor(scolor, ecolor, 26);
+                    for (int i = 1; i < cList.Count; i++)
+                    {
+                        colorList.Add(cList[i]);
+                    }
                     break;
                 case "Turbo":
                     break;
                 case "Jet":
+                    colorList = new List<Color>();
+
+                    scolor = Color.FromArgb(0, 0, 127);
+                    ecolor = Color.FromArgb(0, 0, 255);
+                    cList = GetGradientColor(scolor, ecolor, 14);
+                    for (int i = 0; i < cList.Count; i++)
+                    {
+                        colorList.Add(cList[i]);
+                    }
+                    scolor = Color.FromArgb(0, 0, 255);
+                    ecolor = Color.FromArgb(0, 127, 255);
+                    cList = GetGradientColor(scolor, ecolor, 14);
+                    for (int i = 1; i < cList.Count; i++)
+                    {
+                        colorList.Add(cList[i]);
+                    }
+                    scolor = Color.FromArgb(0, 127, 255);
+                    ecolor = Color.FromArgb(0, 255, 255);
+                    cList = GetGradientColor(scolor, ecolor, 14);
+                    for (int i = 1; i < cList.Count; i++)
+                    {
+                        colorList.Add(cList[i]);
+                    }
+                    scolor = Color.FromArgb(0, 255, 255);
+                    ecolor = Color.FromArgb(127, 255, 127);
+                    cList = GetGradientColor(scolor, ecolor, 14);
+                    for (int i = 1; i < cList.Count; i++)
+                    {
+                        colorList.Add(cList[i]);
+                    }
+                    scolor = Color.FromArgb(127, 255, 127);
+                    ecolor = Color.FromArgb(255, 255, 0);
+                    cList = GetGradientColor(scolor, ecolor, 14);
+                    for (int i = 1; i < cList.Count; i++)
+                    {
+                        colorList.Add(cList[i]);
+                    }
+                    scolor = Color.FromArgb(255, 255, 0);
+                    ecolor = Color.FromArgb(255, 127, 0);
+                    cList = GetGradientColor(scolor, ecolor, 14);
+                    for (int i = 1; i < cList.Count; i++)
+                    {
+                        colorList.Add(cList[i]);
+                    }
+                    scolor = Color.FromArgb(255, 127, 0);
+                    ecolor = Color.FromArgb(255, 0, 0);
+                    cList = GetGradientColor(scolor, ecolor, 14);
+                    for (int i = 1; i < cList.Count; i++)
+                    {
+                        colorList.Add(cList[i]);
+                    }
+                    scolor = Color.FromArgb(255, 0, 0);
+                    ecolor = Color.FromArgb(127, 0, 0);
+                    cList = GetGradientColor(scolor, ecolor, 14);
+                    for (int i = 1; i < cList.Count; i++)
+                    {
+                        colorList.Add(cList[i]);
+                    }
                     break;
+
             }
 
             return colorList;
         }
         private List<Color> GetGradientColor(Color start, Color end, int step)
         {
-            colorList = new List<Color>();
+            List<Color> cList = new List<Color>();
 
             var aStep = (end.A - start.A) / step;
             var rStep = (end.R - start.R) / step;
@@ -68,14 +160,14 @@ namespace DrawWafer
                 var r = start.R + i * rStep;
                 var g = start.G + i * gStep;
                 var b = start.B + i * bStep;
-                colorList.Add(Color.FromArgb(a, r, g, b));
+                cList.Add(Color.FromArgb(a, r, g, b));
             }
 
-            return colorList;
+            return cList;
         }
         private List<Color> GetGradientColor(Color start, Color mid, Color end, int step)
         {
-            colorList = new List<Color>();
+            List<Color> cList = new List<Color>();
 
             int count = step / 2;
 
@@ -90,7 +182,7 @@ namespace DrawWafer
                 var r = start.R + i * rStep;
                 var g = start.G + i * gStep;
                 var b = start.B + i * bStep;
-                colorList.Add(Color.FromArgb(a, r, g, b));
+                cList.Add(Color.FromArgb(a, r, g, b));
             }
 
             aStep = (end.A - mid.A) / count;
@@ -104,9 +196,9 @@ namespace DrawWafer
                 var r = mid.R + i * rStep;
                 var g = mid.G + i * gStep;
                 var b = mid.B + i * bStep;
-                colorList.Add(Color.FromArgb(a, r, g, b));
+                cList.Add(Color.FromArgb(a, r, g, b));
             }
-            return colorList;
+            return cList;
         }
         private void DrawGradient()
         {
@@ -116,7 +208,9 @@ namespace DrawWafer
             gradientPictureBox.Image = bmp;
             Rectangle rec;
             LinearGradientBrush lgb;
-
+            Color scolor;
+            Color ecolor;
+            int width = 0;
             switch (type)
             {
                 case "One":
@@ -134,8 +228,72 @@ namespace DrawWafer
                     g.FillRectangle(lgb, rec);
                     break;
                 case "Parula":
+                    scolor = Color.FromArgb(200,194,41);
+                    ecolor = Color.FromArgb(250, 252, 21);
+                    width = bmp.Width / 4;
+                    rec = new Rectangle((int)(width * 3), 0, width, bmp.Height);
+                    lgb = new LinearGradientBrush(rec, scolor, ecolor, LinearGradientMode.Horizontal);
+                    g.FillRectangle(lgb, rec);
+                    scolor = Color.FromArgb(16, 191, 187);
+                    ecolor = Color.FromArgb(200, 194, 41);
+                    rec = new Rectangle((int)(width * 2), 0, width + 1, bmp.Height);
+                    lgb = new LinearGradientBrush(rec, scolor, ecolor, LinearGradientMode.Horizontal);
+                    g.FillRectangle(lgb, rec);
+                    scolor = Color.FromArgb(53, 121, 254);
+                    ecolor = Color.FromArgb(16, 191, 187);
+                    rec = new Rectangle((int)(width * 1), 0, width + 1, bmp.Height);
+                    lgb = new LinearGradientBrush(rec, scolor, ecolor, LinearGradientMode.Horizontal);
+                    g.FillRectangle(lgb, rec);
+                    scolor = Color.FromArgb(62, 39, 169);
+                    ecolor = Color.FromArgb(53, 121, 254);
+                    rec = new Rectangle((int)(width * 0), 0, width + 1, bmp.Height);
+                    lgb = new LinearGradientBrush(rec, scolor, ecolor, LinearGradientMode.Horizontal);
+                    g.FillRectangle(lgb, rec);
+                    break;
                 case "Turbo":
+                    break;
                 case "Jet":
+                    scolor = Color.FromArgb(255, 0, 0);
+                    ecolor = Color.FromArgb(127, 0, 0);
+                    width = bmp.Width / 8;
+                    rec = new Rectangle((int)(width * 7), 0, width, bmp.Height);
+                    lgb = new LinearGradientBrush(rec, scolor, ecolor, LinearGradientMode.Horizontal);
+                    g.FillRectangle(lgb, rec);
+                    scolor = Color.FromArgb(255, 127, 0);
+                    ecolor = Color.FromArgb(255, 0, 0);
+                    rec = new Rectangle((int)(width * 6), 0, width + 1, bmp.Height);
+                    lgb = new LinearGradientBrush(rec, scolor, ecolor, LinearGradientMode.Horizontal);
+                    g.FillRectangle(lgb, rec);
+                    scolor = Color.FromArgb(255, 255, 0);
+                    ecolor = Color.FromArgb(255, 127, 0);
+                    rec = new Rectangle((int)(width * 5), 0, width + 1, bmp.Height);
+                    lgb = new LinearGradientBrush(rec, scolor, ecolor, LinearGradientMode.Horizontal);
+                    g.FillRectangle(lgb, rec);
+                    scolor = Color.FromArgb(127, 255, 127);
+                    ecolor = Color.FromArgb(255, 255, 0);
+                    rec = new Rectangle((int)(width * 4), 0, width + 1, bmp.Height);
+                    lgb = new LinearGradientBrush(rec, scolor, ecolor, LinearGradientMode.Horizontal);
+                    g.FillRectangle(lgb, rec);
+                    scolor = Color.FromArgb(0, 255, 255);
+                    ecolor = Color.FromArgb(127, 255, 127);
+                    rec = new Rectangle((int)(width * 3), 0, width + 1, bmp.Height);
+                    lgb = new LinearGradientBrush(rec, scolor, ecolor, LinearGradientMode.Horizontal);
+                    g.FillRectangle(lgb, rec);
+                    scolor = Color.FromArgb(0, 127, 255);
+                    ecolor = Color.FromArgb(0, 255, 255);
+                    rec = new Rectangle((int)(width * 2), 0, width + 1, bmp.Height);
+                    lgb = new LinearGradientBrush(rec, scolor, ecolor, LinearGradientMode.Horizontal);
+                    g.FillRectangle(lgb, rec);
+                    scolor = Color.FromArgb(0, 0, 255);
+                    ecolor = Color.FromArgb(0, 127, 255);
+                    rec = new Rectangle((int)(width * 1), 0, width + 1, bmp.Height);
+                    lgb = new LinearGradientBrush(rec, scolor, ecolor, LinearGradientMode.Horizontal);
+                    g.FillRectangle(lgb, rec);
+                    scolor = Color.FromArgb(0, 0, 127);
+                    ecolor = Color.FromArgb(0, 0, 255);
+                    rec = new Rectangle((int)(width * 0), 0, width + 1, bmp.Height);
+                    lgb = new LinearGradientBrush(rec, scolor, ecolor, LinearGradientMode.Horizontal);
+                    g.FillRectangle(lgb, rec);
                     break;
             }
         }
@@ -163,32 +321,33 @@ namespace DrawWafer
         {
             RadioButton rType = (RadioButton)sender;
             if (rType.Checked) type = rType.Text;
+            else return;
 
-            switch (type)
-            {
-                case "One":
-                    startBox.Visible = false;
-                    midBox.Visible = false;
-                    endBox.Visible = true;
-                    break;
-                case "Two":
-                    startBox.Visible = true;
-                    midBox.Visible = false;
-                    endBox.Visible = true;
-                    break;
-                case "Three":
-                    startBox.Visible = true;
-                    midBox.Visible = true;
-                    endBox.Visible = true;
-                    break;
-                case "Parula":
-                case "Turbo":
-                case "Jet":
-                    startBox.Visible = false;
-                    midBox.Visible = false;
-                    endBox.Visible = false;
-                    break;
-            }
+                switch (type)
+                {
+                    case "One":
+                        startBox.Visible = false;
+                        midBox.Visible = false;
+                        endBox.Visible = true;
+                        break;
+                    case "Two":
+                        startBox.Visible = true;
+                        midBox.Visible = false;
+                        endBox.Visible = true;
+                        break;
+                    case "Three":
+                        startBox.Visible = true;
+                        midBox.Visible = true;
+                        endBox.Visible = true;
+                        break;
+                    case "Parula":
+                    case "Turbo":
+                    case "Jet":
+                        startBox.Visible = false;
+                        midBox.Visible = false;
+                        endBox.Visible = false;
+                        break;
+                }
             GetGradientColor();
             DrawGradient();
             SetSelectColor();
