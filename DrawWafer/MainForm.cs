@@ -183,6 +183,8 @@ namespace DrawWafer
                 gallerView.Visible = false;
                 singleView.BringToFront();
                 singleView.Invalidate();
+                singleToolStrip.Visible = true;
+                mainToolStrip.Visible = false;
             }
             else if (currentMap != null && currentMap == sender)
             {
@@ -198,6 +200,8 @@ namespace DrawWafer
                 gallerView.Visible = true;
                 gallerView.BringToFront();
                 gallerView.Invalidate();
+                singleToolStrip.Visible = false;
+                mainToolStrip.Visible = true;
             }
 
         }
@@ -234,7 +238,7 @@ namespace DrawWafer
             mapInfoLabel.Text = message;
         }
 
-        private void testButton1_Click(object sender, EventArgs e)
+        private void testButton_Click(object sender, EventArgs e)
         {
             if (!gallerView.Visible)
                 gallerView.BringToFront();

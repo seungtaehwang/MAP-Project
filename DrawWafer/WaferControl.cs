@@ -46,10 +46,12 @@ namespace DrawWafer
 
         private Bitmap canvasBitmap;
         private Graphics canvasGraphics;
+        float scrolPosX = 0.0f;
+        float scrolPosY = 0.0f;
 
         public event ChipInfoEvent? OnChipInfo;
 
-        public WaferControl(DataTable dt, int mapSize, float waferSize, float dieSizeX, float dieSizeY, float waferEdge, float dieSpace)
+        public WaferControl(DataTable dt, int mapSize, float waferSize, float dieSizeX, float dieSizeY, float waferEdge, float scribeWidth)
         {
             InitializeComponent();
             this.SetStyle(ControlStyles.ResizeRedraw, true);
@@ -65,16 +67,56 @@ namespace DrawWafer
             EDGE_EXCLUSION_UM = waferEdge;
             DIE_SIZE_X_UM = dieSizeX;
             DIE_SIZE_Y_UM = dieSizeY;
-            SCRIBE_WIDTH_UM = dieSpace;
+            SCRIBE_WIDTH_UM = scribeWidth;
 
 
             // mapBox(WaferMap) Event Mapping
             mapBox.MouseUp += MapBox_MouseUp;
             mapBox.DoubleClick += mapBox_DoubleClick;
             mapBox.MouseClick += MapBox_MouseClick;
-            mapPanel.Scroll += mapPanel_Scroll;
+            mapBox.MouseWheel += MapBox_MouseWheel;
+            mapPanel.MouseWheel += MapPanel_MouseWheel;
         }
 
+        private void MapPanel_MouseWheel(object? sender, MouseEventArgs e)
+        {
+            var handledArgs = e as HandledMouseEventArgs;
+            if (handledArgs != null)
+            {
+                // Handled 속성을 true로 설정하여 기본 스크롤 동작 취소
+                handledArgs.Handled = true;
+            }
+        }
+
+        private void MapBox_MouseWheel(object? sender, MouseEventArgs e)
+        {
+            System.Diagnostics.Debug.WriteLine($"pos = [ {e.X}, {e.Y} ] delta = [ {e.Delta.ToString()} ]");
+            System.Diagnostics.Debug.WriteLine($"size = [ {mapBox.Width}, {mapBox.Height} ]");
+            scrolPosX = (float)e.X / (float)mapBox.Width;
+            scrolPosY = (float)e.Y / (float)mapBox.Height;
+
+            if (e.Delta < 0)
+            {
+                if (ZOOM_SCALE < 5.0f)
+                    ZOOM_SCALE += 0.2f;
+            }
+            else
+            {
+                if (ZOOM_SCALE > 1.0f)
+                    ZOOM_SCALE -= 0.2f;
+            }
+            DrawMap(ZOOM_SCALE);
+
+            if (ZOOM_SCALE > 1.0f)
+            {
+                int left = (int)(scrolPosX * mapBox.Width);
+                mapBox.Left = -left + (int)mapPanel.Width / 2;
+                int top = (int)(scrolPosY * mapBox.Height);
+                mapBox.Top = -top + (int)mapPanel.Height / 2;
+            }
+
+
+        }
 
         private Color _borderColor = Color.LightGray; // Default border color
         [DefaultValue(typeof(Color), "LightGray")] // 특성으로 기본값 지정
@@ -127,8 +169,8 @@ namespace DrawWafer
             {
                 mapBox.Dock = DockStyle.Fill;
             }
-            mapBox.Width = (mapPanel.Width - 2) * (int)ZOOM_SCALE;
-            mapBox.Height = (mapPanel.Width - 2) * (int)ZOOM_SCALE;
+            mapBox.Width = (int)((mapPanel.Width - 2) * ZOOM_SCALE);
+            mapBox.Height = (int)((mapPanel.Width - 2) * ZOOM_SCALE);
 
             // Initialize Canvas
             canvasBitmap = new Bitmap(mapBox.Width, mapBox.Height);
@@ -212,11 +254,6 @@ namespace DrawWafer
                 row["PT2_X"] = xPosPx + DIE_SIZE_X_PX;
                 row["PT2_Y"] = yPosPx + DIE_SIZE_Y_PX;
             }
-        }
-
-        private void mapPanel_Scroll(object sender, ScrollEventArgs e)
-        {
-            mapBox.Refresh();
         }
 
         private void MapBox_MouseUp(object? sender, MouseEventArgs e)

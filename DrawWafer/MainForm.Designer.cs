@@ -274,7 +274,7 @@
             testButton.TabIndex = 6;
             testButton.Text = "Test";
             testButton.UseVisualStyleBackColor = true;
-            testButton.Click +=testButton1_Click;
+            testButton.Click += testButton_Click;
             // 
             // MainForm
             // 
