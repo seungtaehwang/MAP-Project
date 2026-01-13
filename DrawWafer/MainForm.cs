@@ -25,6 +25,12 @@ namespace DrawWafer
         public MainForm()
         {
             InitializeComponent();
+
+            #if DEBUG
+                this.Width = 1920;
+                this.Height = 1080;
+                Console.Write("Custom Size Mode");
+            #endif
         }
 
         private DataTable CreateDieDataTable()

@@ -9,4 +9,8 @@
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="SciChart" Version="8.10.0.28840" />
+  </ItemGroup>
+
 </Project>

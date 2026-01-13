@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DrawWafer_WPF"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="1255" WindowState="Maximized">
+        Title="MainWindow" Height="450" Width="1255" WindowStartupLocation="CenterScreen">
     <Grid x:Name="MapGrid">
         <ToolBar x:Name="MainToolbar" HorizontalAlignment="Stretch" Margin="0,0,0,0" VerticalAlignment="Top">
             <Label Content="Wafer Size (um) :" HorizontalAlignment="Left" VerticalAlignment="Top"/>
@@ -45,6 +45,7 @@
                 <ComboBoxItem Content="100"/>
             </ComboBox>
             <Button x:Name="DrawButton" Content="Draw Map" HorizontalAlignment="Left" VerticalAlignment="Top" Click="DrawButton_Click"/>
+            <Button x:Name="DrawChartButton" Content="Draw chart" Background="LightGray" HorizontalAlignment="Left" VerticalAlignment="Top" Click="DrawChartButton_Click"/>
         </ToolBar>
         <ToolBar x:Name="SingleToolbar" HorizontalAlignment="Stretch" Margin="0,0,0,0" VerticalAlignment="Top" Visibility="Hidden">
             <Label Content="Zoom Scale :" HorizontalAlignment="Left" VerticalAlignment="Top"/>

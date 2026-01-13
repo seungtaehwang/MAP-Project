@@ -90,6 +90,8 @@ namespace DrawWafer
 
         private void MapBox_MouseWheel(object? sender, MouseEventArgs e)
         {
+            if (_borderColor == Color.LightGray) return;
+
             System.Diagnostics.Debug.WriteLine($"pos = [ {e.X}, {e.Y} ] delta = [ {e.Delta.ToString()} ]");
             System.Diagnostics.Debug.WriteLine($"size = [ {mapBox.Width}, {mapBox.Height} ]");
             scrolPosX = (float)e.X / (float)mapBox.Width;
@@ -114,8 +116,6 @@ namespace DrawWafer
                 int top = (int)(scrolPosY * mapBox.Height);
                 mapBox.Top = -top + (int)mapPanel.Height / 2;
             }
-
-
         }
 
         private Color _borderColor = Color.LightGray; // Default border color

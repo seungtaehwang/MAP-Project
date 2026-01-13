@@ -292,7 +292,6 @@
             Name = "MainForm";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Draw Wafer Map (Gallery)";
-            WindowState = FormWindowState.Maximized;
             FormClosed += MainForm_FormClosed;
             mainToolStrip.ResumeLayout(false);
             mainToolStrip.PerformLayout();
